@@ -1,0 +1,22 @@
+.DS_STORE
+
+# Generated files/folders
+.env-cmdrc
+.env-cmdrc.json
+.serverless
+coverage
+.webpack
+.esbuild
+mock.json
+build/
+.ddb-data/
+.scannerwork/
+cdk.out
+*.log
+
+# Dev directories
+node_modules
+
+#IDE directories
+.idea/
+.vscode/

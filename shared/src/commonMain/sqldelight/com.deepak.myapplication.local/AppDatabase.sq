@@ -1,0 +1,18 @@
+CREATE TABLE user (
+	name	TEXT NOT NULL,
+	"email"	TEXT NOT NULL ,
+	"password"	TEXT NOT NULL,
+	"type"	INTEGER NOT NULL,
+	PRIMARY KEY("email")
+);
+
+insertUser:
+INSERT  INTO user(name,email, password, type) VALUES (?,?,?,?);
+selectUser:
+SELECT * FROM user WHERE user.email = ?;
+validateUser:
+SELECT * FROM user WHERE user.email = ? AND user.password = ?;
+updateUser:
+UPDATE  user SET name = ?, password = ? WHERE email = ?;
+deleteAllUser:
+DELETE FROM user;
