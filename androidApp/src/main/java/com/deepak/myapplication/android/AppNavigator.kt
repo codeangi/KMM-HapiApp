@@ -28,6 +28,7 @@ fun AppNavigator(
                 navController.popBackStack()
             }, onRegSuccess = {
                 navController.popBackStack(Routes.LOGIN,inclusive = true)
+                navController.navigate(Routes.HOME_SCREEN)
             })
         }
         composable(Routes.HOME_SCREEN) {

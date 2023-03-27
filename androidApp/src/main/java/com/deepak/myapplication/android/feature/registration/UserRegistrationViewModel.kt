@@ -12,9 +12,15 @@ data class UserRegistrationViewModelState(
     val name: String = "",
     val email: String = "",
     val password: String = "",
-    val isActionEnabled: Boolean = false
+    val isActionEnabled: Boolean = false,
+    val registrationState: RegistrationState = RegistrationState.None
 )
 
+sealed interface RegistrationState{
+    object Success: RegistrationState
+    data class Error(val errorMessage:String): RegistrationState
+    object None: RegistrationState
+}
 
 sealed interface UserRegistrationScreenEvent {
     data class OnNameChange(val name: String) : UserRegistrationScreenEvent
@@ -52,8 +58,17 @@ class UserRegistrationViewModel constructor(private val userRegistrationUseCase:
         val user = User(name = state.name, email = state.email, password = state.password, 1, "")
         viewModelScope.launch {
             val status = userRegistrationUseCase.registerUser(user)
+            if(status){
+                viewModelStateFlow.value = viewModelStateFlow.value.copy(registrationState = RegistrationState.Success)
+            }else {
+                viewModelStateFlow.value = viewModelStateFlow.value.copy(registrationState = RegistrationState.Error("User existing with this email"))
+            }
             Log.d("ViewModel", "User data inserted:$status")
         }
+    }
+
+    fun clearRegState(){
+        viewModelStateFlow.value = viewModelStateFlow.value.copy(registrationState = RegistrationState.None)
     }
 
     private fun isValidData() {

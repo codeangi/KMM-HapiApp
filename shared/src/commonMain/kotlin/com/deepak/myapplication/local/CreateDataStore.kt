@@ -16,7 +16,7 @@ fun getDataStore(producePath:()->String): DataStore<Preferences> =
             dataStore = it
         }
     }
-internal const val DATA_STORE_FILE_NAME = "com.myapplication.preferences_pb"
+internal const val DATA_STORE_FILE_NAME = "hapi_care_user.preferences_pb"
 
 expect class DataStoreProvider{
     fun createDataStore(): DataStore<Preferences>

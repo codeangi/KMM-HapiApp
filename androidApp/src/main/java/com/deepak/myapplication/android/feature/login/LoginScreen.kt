@@ -11,39 +11,58 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.deepak.myapplication.android.feature.registration.UserRegistrationViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginScreen(onRegCLick:()->Unit, onLoginSuccess:()->Unit) {
-    val  viewModel: LoginViewModel =  koinViewModel()
+fun LoginScreen(onRegCLick: () -> Unit, onLoginSuccess: () -> Unit) {
+    val viewModel: LoginViewModel = koinViewModel()
     val screenState by viewModel.viewModelState.collectAsState()
+    when (screenState.loginState) {
+        LoginState.Success -> {
+            onLoginSuccess.invoke()
+            viewModel.clearLoginState()
+        }
+        is LoginState.Error -> {
+            //Show error
+        }
+        else -> {
+
+        }
+    }
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
-        Box(modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(Modifier.align(Alignment.Center), verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                OutlinedTextField(value = screenState.userName, onValueChange ={
-                 viewModel.onEvent(LoginScreenEvent.OnUserNameChange(it))   
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(), contentAlignment = Alignment.Center
+        ) {
+            Column(
+                Modifier.align(Alignment.Center),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OutlinedTextField(value = screenState.userName, onValueChange = {
+                    viewModel.onEvent(LoginScreenEvent.OnUserNameChange(it))
                 }, placeholder = {
                     Text(text = "User name")
                 })
-                OutlinedTextField(value = screenState.password, onValueChange ={
+                OutlinedTextField(value = screenState.password, onValueChange = {
                     viewModel.onEvent(LoginScreenEvent.OnPasswordChange(it))
-                },placeholder = {
+                }, placeholder = {
                     Text(text = "Password")
                 }, visualTransformation = PasswordVisualTransformation())
-                
+
                 Button(onClick = { viewModel.onEvent(LoginScreenEvent.OnLoginAction) }) {
-                    Text(text = "Submit", )
+                    Text(text = "Submit")
                 }
-                
+
                 TextButton(onClick = {
                     onRegCLick.invoke()
                 }) {
-                    Text(text = "New User?", style = TextStyle(color = Color.Blue, fontWeight = FontWeight.Bold))
+                    Text(
+                        text = "New User?",
+                        style = TextStyle(color = Color.Blue, fontWeight = FontWeight.Bold)
+                    )
                 }
             }
         }

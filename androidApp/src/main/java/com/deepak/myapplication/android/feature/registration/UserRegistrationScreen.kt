@@ -7,6 +7,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -18,24 +19,37 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun UserRegistrationScreen(onBack: () -> Unit, onRegSuccess: () -> Unit) {
     val viewModel: UserRegistrationViewModel = koinViewModel()
-    val viewModelState = viewModel.viewModelStateFlow.collectAsState()
+    val viewModelState by viewModel.viewModelStateFlow.collectAsState()
+    when (viewModelState.registrationState) {
+        RegistrationState.Success -> {
+            onRegSuccess.invoke()
+            viewModel.clearRegState()
+        }
+        is RegistrationState.Error -> {
+            //Error
+        }
+        else -> {
+
+        }
+    }
+
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         AppBarOnlyBackButton(onBack)
     }) { contentPadding ->
         Box(
             modifier = Modifier
-               .fillMaxSize()
-               .padding(contentPadding), contentAlignment = Alignment.TopCenter
+                .fillMaxSize()
+                .padding(contentPadding), contentAlignment = Alignment.TopCenter
         ) {
             Column(
                 modifier = Modifier
-                   .fillMaxWidth()
-                   .padding(horizontal = 20.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(100.dp))
-                OutlinedTextField(value = viewModelState.value.name, onValueChange = {
+                OutlinedTextField(value = viewModelState.name, onValueChange = {
                     viewModel.onEvent(UserRegistrationScreenEvent.OnNameChange(it))
                 }, modifier = Modifier.fillMaxWidth(), placeholder = {
                     Text(text = "Name")
@@ -43,7 +57,7 @@ fun UserRegistrationScreen(onBack: () -> Unit, onRegSuccess: () -> Unit) {
                     Text(text = "Name")
                 })
 
-                OutlinedTextField(value = viewModelState.value.email, onValueChange = {
+                OutlinedTextField(value = viewModelState.email, onValueChange = {
                     viewModel.onEvent(UserRegistrationScreenEvent.OnEmailChange(it))
                 }, modifier = Modifier.fillMaxWidth(), placeholder = {
                     Text(text = "EMail")
@@ -52,7 +66,7 @@ fun UserRegistrationScreen(onBack: () -> Unit, onRegSuccess: () -> Unit) {
                 })
 
                 OutlinedTextField(
-                    value = viewModelState.value.password,
+                    value = viewModelState.password,
                     onValueChange = {
                         viewModel.onEvent(UserRegistrationScreenEvent.OnPasswordChange(it))
                     },
@@ -67,7 +81,7 @@ fun UserRegistrationScreen(onBack: () -> Unit, onRegSuccess: () -> Unit) {
 
                 Button(onClick = {
                     viewModel.onEvent(UserRegistrationScreenEvent.SignUp)
-                }, enabled = viewModelState.value.isActionEnabled) {
+                }, enabled = viewModelState.isActionEnabled) {
                     Text(text = "Submit", modifier = Modifier.padding(vertical = 10.dp))
                 }
             }
