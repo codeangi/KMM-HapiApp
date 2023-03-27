@@ -23,7 +23,7 @@ sealed interface UserRegistrationScreenEvent {
     object SignUp : UserRegistrationScreenEvent
 }
 
-class UserRegistrationViewModel(private val userRegistrationUseCase: UserRegistrationUseCase) : ViewModel() {
+class UserRegistrationViewModel constructor(private val userRegistrationUseCase: UserRegistrationUseCase) : ViewModel() {
     var viewModelStateFlow = MutableStateFlow(UserRegistrationViewModelState())
         private set
 
@@ -49,7 +49,7 @@ class UserRegistrationViewModel(private val userRegistrationUseCase: UserRegistr
 
     private fun handleSignUpRequest() {
         val state = viewModelStateFlow.value
-        val user = User(name = state.name, email = state.email, password = state.password, 1)
+        val user = User(name = state.name, email = state.email, password = state.password, 1, "")
         viewModelScope.launch {
             val status = userRegistrationUseCase.registerUser(user)
             Log.d("ViewModel", "User data inserted:$status")

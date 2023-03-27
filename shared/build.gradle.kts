@@ -45,6 +45,8 @@ kotlin {
                 implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
                 implementation("io.insert-koin:koin-core:${koinVersion}")
                 implementation("io.insert-koin:koin-test:${koinVersion}")
+                //Preference
+                api ("androidx.datastore:datastore-preferences-core:1.1.0-alpha03")
             }
         }
         val commonTest by getting {

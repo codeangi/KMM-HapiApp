@@ -26,7 +26,7 @@ class RegistrationViewModel: ObservableObject {
         isLoading = false
         error = nil
         registrationStatus = false
-        let user = User(name: name, email: email, password: password, type: 1)
+        let user = User(name: name, email: email, password: password, type: 1,patient_id: "")
 
         DispatchQueue.main.async {
             self.registrationUseCase.registerUser(user: user, completionHandler: {kotlinBoolean, error in

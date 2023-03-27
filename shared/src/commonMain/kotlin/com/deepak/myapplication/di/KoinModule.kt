@@ -1,13 +1,18 @@
 package com.deepak.myapplication.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.deepak.myapplication.getNetworkClient
 import com.deepak.myapplication.local.DataBase
+import com.deepak.myapplication.local.DataStoreProvider
 import com.deepak.myapplication.local.DatabaseDriverFactory
+import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.platformModule
 import com.deepak.myapplication.repository.UserRepository
 import com.deepak.myapplication.repository.UserRepositoryImpl
 import com.deepak.myapplication.usecase.LoginUseCase
 import com.deepak.myapplication.usecase.UserRegistrationUseCase
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -25,15 +30,22 @@ fun initKoin() = initKoin {
 val commonModule = module {
     single { getNetworkClient() }
     single { provideDataBase(get()) }
+    single { provideDataStore(get()) }
+    factory { UserSettingsRepository(get()) }
     factory<UserRepository> { UserRepositoryImpl(get()) }
-    factory { LoginUseCase(get()) }
-    factory { UserRegistrationUseCase(get()) }
+    factory { LoginUseCase(get(), get()) }
+    factory { UserRegistrationUseCase(get(), get()) }
 
 }
 
 internal fun provideDataBase(databaseDriverFactory: DatabaseDriverFactory): DataBase {
     return DataBase(databaseDriverFactory)
 }
+
+internal fun provideDataStore(dataStoreProvider: DataStoreProvider):DataStore<Preferences>{
+    return dataStoreProvider.createDataStore()
+}
+
 
 fun <T> Koin.provideDependency(clazz: KClass<*>): T{
     return get(clazz, qualifier = null)

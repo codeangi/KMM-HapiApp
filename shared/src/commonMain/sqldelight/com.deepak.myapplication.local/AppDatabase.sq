@@ -3,11 +3,12 @@ CREATE TABLE user (
 	"email"	TEXT NOT NULL ,
 	"password"	TEXT NOT NULL,
 	"type"	INTEGER NOT NULL,
+	"patient_id" TEXT NOT NULL,
 	PRIMARY KEY("email")
 );
 
 insertUser:
-INSERT  INTO user(name,email, password, type) VALUES (?,?,?,?);
+INSERT  INTO user(name,email, password, type, patient_id) VALUES (?,?,?,?,?);
 selectUser:
 SELECT * FROM user WHERE user.email = ?;
 validateUser:

@@ -16,8 +16,9 @@ class LoginViewModel : ObservableObject {
     @Published var error = true
     @Published var errorMessage:String = ""
     private let loginUseCase = KMPLoginUseCaseHelper().loginUseCase
-    func login() {	
-        loginUseCase.verifyUser(email: userName, password: password, completionHandler:{user, error in
+    func login() {
+
+        loginUseCase.loginUser(email: userName, password: password, completionHandler:{user, error in
             if error == nil {
                 self.loginSuccess = true
             }else {

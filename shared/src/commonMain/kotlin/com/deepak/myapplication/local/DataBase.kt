@@ -21,8 +21,7 @@ internal class DataBase(databaseDriverFactory: DatabaseDriverFactory) {
             email = email,
             password = password,
             mapper = ::mapToUserSelection
-        )
-            .executeAsOneOrNull()
+        ).executeAsOneOrNull()
     }
 
     internal fun insertUser(user: User): Boolean {
@@ -31,7 +30,8 @@ internal class DataBase(databaseDriverFactory: DatabaseDriverFactory) {
                 name = user.name,
                 email = user.email,
                 password = user.password,
-                type = user.type
+                type = user.type,
+                patient_id = user.patient_id
             )
             return true
         }
@@ -42,8 +42,9 @@ internal class DataBase(databaseDriverFactory: DatabaseDriverFactory) {
         name: String,
         email: String,
         password: String,
-        type: Long
+        type: Long,
+        patientId:String
     ): User {
-        return User(name = name, email = email, password = password, type)
+        return User(name = name, email = email, password = password, type =  type, patient_id = patientId)
     }
 }
