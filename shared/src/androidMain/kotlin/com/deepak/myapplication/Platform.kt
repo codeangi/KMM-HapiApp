@@ -1,16 +1,16 @@
 package com.deepak.myapplication
 
+import com.deepak.myapplication.local.DatabaseDriverFactory
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import org.koin.dsl.module
 
-class AndroidPlatform : Platform {
-    override val name: String = "Android ${android.os.Build.VERSION.SDK_INT}"
+
+actual fun platformModule() = module {
+        single { DatabaseDriverFactory(get()) }
 }
-
-actual fun getPlatform(): Platform = AndroidPlatform()
-
 actual fun getNetworkClient(): HttpClient {
-    return HttpClient(OkHttp){
+    return HttpClient(OkHttp) {
         engine {
 
         }

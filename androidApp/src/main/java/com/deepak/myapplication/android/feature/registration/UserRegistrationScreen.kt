@@ -10,11 +10,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun UserRegistrationScreen() {
-   val  viewModel: UserRegistrationViewModel =  viewModel()
+   val  viewModel: UserRegistrationViewModel =  koinViewModel()
    val viewModelState = viewModel.viewModelStateFlow.collectAsState()
    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {}) {contentPadding->
       Box(modifier = Modifier

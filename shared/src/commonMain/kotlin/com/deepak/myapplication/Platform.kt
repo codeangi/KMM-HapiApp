@@ -1,7 +1,8 @@
 package com.deepak.myapplication
 
-interface Platform {
-    val name: String
-}
+import io.ktor.client.*
+import org.koin.core.module.Module
 
-expect fun getPlatform(): Platform
+
+expect fun platformModule(): Module
+expect fun getNetworkClient(): HttpClient

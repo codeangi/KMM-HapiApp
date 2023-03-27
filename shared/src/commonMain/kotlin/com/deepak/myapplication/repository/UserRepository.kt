@@ -1,8 +1,10 @@
 package com.deepak.myapplication.repository
 
 import com.deepak.myapplication.local.DataBase
-import com.deepak.myapplication.local.DatabaseDriverFactory
 import comdeepakmyapplicationlocal.User
+import io.ktor.client.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 interface UserRepository {
     suspend fun addUser(user: User): Boolean
@@ -10,9 +12,11 @@ interface UserRepository {
     suspend fun getTheUser(email: String): User?
 }
 
-class UserRepositoryImpl constructor(private val databaseDriverFactory: DatabaseDriverFactory) :
-    UserRepository {
-    private val database = DataBase(databaseDriverFactory)
+class UserRepositoryImpl constructor (private val httpClient: HttpClient) :
+    UserRepository, KoinComponent {
+
+    private val database: DataBase by inject()
+
     override suspend fun addUser(user: User): Boolean {
         return database.insertUser(user)
     }

@@ -16,14 +16,18 @@ internal class DataBase(databaseDriverFactory: DatabaseDriverFactory) {
         return dbQuery.selectUser(email = email, mapper = ::mapToUserSelection).executeAsOneOrNull()
     }
 
-    internal fun validateUser(email: String, password: String):User? {
-        return dbQuery.validateUser(email = email, password = password, mapper = ::mapToUserSelection)
+    internal fun validateUser(email: String, password: String): User? {
+        return dbQuery.validateUser(
+            email = email,
+            password = password,
+            mapper = ::mapToUserSelection
+        )
             .executeAsOneOrNull()
     }
 
-    internal fun insertUser(user: User) :Boolean {
+    internal fun insertUser(user: User): Boolean {
         if (getUser(user.email) == null) {
-             dbQuery.insertUser(
+            dbQuery.insertUser(
                 name = user.name,
                 email = user.email,
                 password = user.password,
