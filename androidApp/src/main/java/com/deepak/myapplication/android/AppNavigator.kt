@@ -40,6 +40,7 @@ fun AppNavigator(
         }
         composable(Routes.HOME_SCREEN) {
             HomeScreen()
+            MainScreenView()
         }
     }
 }

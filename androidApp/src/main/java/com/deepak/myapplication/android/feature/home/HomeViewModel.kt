@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
+import com.deepak.myapplication.model.ClinicData
+import com.deepak.myapplication.model.DoctorData
 import com.deepak.myapplication.model.PatientDataResp
 import com.deepak.myapplication.usecase.HomeUseCase
 import kotlinx.coroutines.Dispatchers
@@ -14,8 +16,6 @@ data class HomeViewModelState(
     val userId: String = "",
     val patientId: String = "",
     val patientName: String? = ""
-
-
 )
 
 class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewModel() {
@@ -23,7 +23,12 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
     var homeUiState = MutableStateFlow(HomeViewModelState())
         private set
 
+    var doctorDataUiState = MutableStateFlow(listOf(DoctorData()))
+    var clinicDataUiState = MutableStateFlow(listOf(ClinicData()))
+
     init {
+        getClinicData()
+        getDoctorsData()
         viewModelScope.launch {
             homeUiState.value = homeUiState.value.copy(
                 userId = homeUseCase.getUserId() ?: "",
@@ -44,6 +49,18 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
                     homeUiState.value = homeUiState.value.copy(patientName = name)
                 }
             }
+        }
+    }
+
+    private fun getDoctorsData() {
+        viewModelScope.launch {
+            doctorDataUiState.value =  homeUseCase.getDoctorsData()
+        }
+    }
+
+    private fun getClinicData() {
+        viewModelScope.launch {
+            clinicDataUiState.value =  homeUseCase.getClinicDetails()
         }
     }
 }
