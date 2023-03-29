@@ -9,7 +9,6 @@
 import SwiftUI
 struct UserRegistrationScreen: View {
     
-    
     @ObservedObject var viewModel: RegistrationViewModel
     
     var body: some View {
@@ -44,22 +43,29 @@ struct UserRegistrationScreen: View {
                 .cornerRadius(10)
                 .padding(.horizontal,20)
             
-            Button(action:{
+            Button(action: {
                 //Perform signup action
                 viewModel.registration()
-            }){
+            }, label: {
                 Text("Submit")
                     .font(.headline)
                     .foregroundColor(.white)
                     .padding().frame(width: 220, height: 60)
                     .background(Color.blue)
                     .cornerRadius(15)
+            }).fullScreenCover(isPresented: $viewModel.registrationStatus) {
+                TabBarView()
             }
-          
+            if viewModel.error != nil {
+                Text(viewModel.errorMessage)
+                    .bold()
+                    .background(Color.white.opacity(0.2))
+                    .padding()
+                    .font(.subheadline)
+                    .foregroundColor(Color.red)
+            }
         }
-        
     }
-    
 }
 
 struct LoginScene_Previews: PreviewProvider {
