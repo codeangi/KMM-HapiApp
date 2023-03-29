@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "My_Application"
+rootProject.name = "Hapi Care"
 include(":androidApp")
 include(":shared")
