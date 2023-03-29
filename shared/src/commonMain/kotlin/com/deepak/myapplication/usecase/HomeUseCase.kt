@@ -24,11 +24,11 @@ class HomeUseCase constructor(
         }
     }
 
-    suspend fun getClinicDetails(): List<ClinicData> {
+    suspend fun getClinicDetails(): AppRequest {
         return dataMapper.getClinicDataFromResponse()
     }
 
-    suspend fun getDoctorsData(): List<DoctorData> {
+    suspend fun getDoctorsData(): AppRequest {
         return dataMapper.getDoctorsDataFromResponse()
     }
 }

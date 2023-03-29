@@ -54,13 +54,23 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
 
     private fun getDoctorsData() {
         viewModelScope.launch {
-            doctorDataUiState.value =  homeUseCase.getDoctorsData()
+            val data =  homeUseCase.getDoctorsData()
+            if (data is AppRequest.ListResult<*> && data.result.firstOrNull() is DoctorData) {
+                data.result.let {
+                    doctorDataUiState.value = data.result.filterIsInstance<DoctorData>()
+                }
+            }
         }
     }
 
     private fun getClinicData() {
         viewModelScope.launch {
-            clinicDataUiState.value =  homeUseCase.getClinicDetails()
+            val data = homeUseCase.getClinicDetails()
+            if (data is AppRequest.ListResult<*>) {
+                data.result.let {
+                    clinicDataUiState.value = data.result.filterIsInstance<ClinicData>().takeIf { it.size == data.result.size } ?: emptyList()
+                }
+            }
         }
     }
 }
