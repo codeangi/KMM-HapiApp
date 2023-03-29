@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.deepak.myapplication.android.theme.customCyan
+import com.deepak.myapplication.android.theme.lightGrey
 
 @Composable
 fun AppBarOnlyBackButton(onBack: () -> Unit) {
@@ -56,17 +58,17 @@ fun AppBarWithTitle(title: String) {
                 Modifier
                     .size(40.dp, 40.dp)
                     .align(CenterVertically),
-                tint = Color.Blue)
+                tint = customCyan)
             
             Spacer(modifier = Modifier.width(8.dp))
             
-            Text(text = title, style = MaterialTheme.typography.h4, fontWeight = FontWeight.W700, color = Color.Blue, modifier = Modifier.weight(1f))
+            Text(text = title, style = MaterialTheme.typography.h4, fontWeight = FontWeight.W700, color = customCyan, modifier = Modifier.weight(1f))
 
             Icon(painter = painterResource(id = R.drawable.round_call_24), contentDescription = "Call",
                 Modifier
                     .size(32.dp, 32.dp)
                     .align(CenterVertically),
-                tint = Color.Blue)
+                tint = customCyan)
 
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -76,6 +78,6 @@ fun AppBarWithTitle(title: String) {
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .height(1.dp),
-            color = Color.Gray.copy(0.4f))
+            color = lightGrey)
     }
 }

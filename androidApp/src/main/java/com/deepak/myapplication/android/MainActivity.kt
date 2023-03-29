@@ -21,6 +21,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.deepak.myapplication.android.feature.home.HomeScreen
+import com.deepak.myapplication.android.theme.customCyan
+import com.deepak.myapplication.android.theme.lightGrey
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +69,7 @@ fun MainScreenView() {
                             }
                             selectedTab.value = screen
                         },
-                        selectedContentColor = Color.Blue,
+                        selectedContentColor = customCyan,
                         unselectedContentColor = Color.Gray
                     )
                 }

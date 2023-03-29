@@ -23,6 +23,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.deepak.myapplication.android.AppBarWithTitle
 import com.deepak.myapplication.android.R
+import com.deepak.myapplication.android.theme.customBlue
+import com.deepak.myapplication.android.theme.customCyan
+import com.deepak.myapplication.android.theme.customCyan
+import com.deepak.myapplication.android.theme.lightGrey
 import com.deepak.myapplication.android.viewPort
 import org.koin.androidx.compose.koinViewModel
 
@@ -89,11 +93,11 @@ fun MedicalRecordsSectionUi() {
         OutlinedButton(
             onClick = { },
             Modifier.padding(end = 12.dp),
-            border = BorderStroke(2.dp, Color.Blue),
+            border = BorderStroke(2.dp, customCyan),
             shape = RoundedCornerShape(4.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Blue),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = customCyan),
         ){
-            Text( text = "VIEW ALL RECORDS", style = MaterialTheme.typography.body1, fontWeight = FontWeight.W500, color = Color.Blue )
+            Text( text = "VIEW ALL RECORDS", style = MaterialTheme.typography.body1, fontWeight = FontWeight.W500, color = customCyan )
         }
     }
 }
@@ -111,21 +115,21 @@ fun MedicalRecordCardUi(categories: String) {
                 Modifier
                     .size(24.dp, 24.dp)
                     .align(Alignment.CenterVertically),
-                tint = Color.Blue)
+                tint = customCyan)
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text(text = categories, style = MaterialTheme.typography.body1, fontWeight = FontWeight.W700, color = Color.Blue, modifier = Modifier.weight(1f))
+            Text(text = categories, style = MaterialTheme.typography.body1, fontWeight = FontWeight.W700, color = customCyan, modifier = Modifier.weight(1f))
 
             Icon(painter = painterResource(id = R.drawable.baseline_arrow_forward_24), contentDescription = null,
                 Modifier
                     .size(24.dp, 24.dp)
                     .align(Alignment.CenterVertically),
-                tint = Color.Blue)
+                tint = customCyan)
 
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Divider(Modifier.height(1.dp), color = Color.Gray.copy(0.4f))
+        Divider(Modifier.height(1.dp), color = lightGrey)
     }
 }
 
@@ -206,7 +210,7 @@ fun DoctorCardUi(name: String, designation: String) {
         Box(
             modifier = Modifier
                 .size(140.dp, 180.dp)
-                .background(Color.Blue.copy(0.5f), shape = RoundedCornerShape(24.dp)),
+                .background(customCyan, shape = RoundedCornerShape(24.dp)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -232,7 +236,7 @@ fun BookNowCard() {
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .background(Color.Blue.copy(0.5f), shape = RoundedCornerShape(24.dp))
+            .background(customBlue, shape = RoundedCornerShape(24.dp))
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.width(16.dp))
@@ -281,10 +285,10 @@ fun FeaturePillUi(featureName: String) {
     OutlinedButton(
         onClick = { },
         Modifier.padding(end = 12.dp),
-        border = BorderStroke(1.dp, Color.Blue),
+        border = BorderStroke(1.dp, customCyan),
         shape = RoundedCornerShape(50),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
     ){
-        Text( text = featureName, style = MaterialTheme.typography.body1, fontWeight = FontWeight.W600, color = Color.Blue )
+        Text( text = featureName, style = MaterialTheme.typography.body1, fontWeight = FontWeight.W600, color = customCyan)
     }
 }
