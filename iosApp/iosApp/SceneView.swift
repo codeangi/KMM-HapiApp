@@ -6,7 +6,7 @@ struct SceneView: View {
 
 	var body: some View {
         VStack {
-            NavigationView{
+            NavigationView {
                 LoginScreen(viewModel: LoginViewModel())
             }
         }
