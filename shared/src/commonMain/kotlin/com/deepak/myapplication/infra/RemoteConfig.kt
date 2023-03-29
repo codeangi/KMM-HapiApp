@@ -10,11 +10,21 @@ fun createJson() = Json { isLenient = true; ignoreUnknownKeys = true; explicitNu
 
 fun getNetworkClient(): HttpClient {
     return HttpClient {
-        install(Logging)
+        install(Logging) {
+            logger = CustomLogger
+            level = LogLevel.ALL
+        }
         install(ContentNegotiation) {
             json(createJson())
         }
     }
 }
 
+private object  CustomLogger: Logger{
+    private const val TAG = "HTTPCLIENT"
+    override fun log(message: String) {
+        println("$TAG: $message")
+    }
+
+}
 

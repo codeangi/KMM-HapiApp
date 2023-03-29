@@ -1,7 +1,5 @@
 package com.deepak.myapplication.usecase
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import com.deepak.myapplication.AppConstant
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.repository.UserRepository
@@ -14,11 +12,11 @@ class UserRegistrationUseCase constructor(private val userRepository: UserReposi
     suspend fun registerUser(user: User): Boolean{
         val selectedPatientId = AppConstant.AVAILABLE_PATIENT_ID.shuffled().first()
         val status=  userRepository.addUser(user.copy(patient_id = selectedPatientId))
-        if(status){
+        if(status) {
             userSettingsRepository.saveUserId(userId = user.email)
-            userSettingsRepository.savePatientId(patientId = user.patient_id)
+            userSettingsRepository.savePatientId(patientId = selectedPatientId)
         }
-        return true
+        return status
     }
 }
 
