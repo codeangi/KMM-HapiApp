@@ -35,7 +35,7 @@ val commonModule = module {
     single { getNetworkClient() }
     single { provideDataBase(get()) }
     single { provideDataStore(get()) }
-    factory { UserSettingsRepository(get()) }
+    single { UserSettingsRepository(get()) }
     factory<UserRepository> { UserRepositoryImpl(get()) }
     factory { LoginUseCase(get(), get()) }
     factory { UserRegistrationUseCase(get(), get()) }

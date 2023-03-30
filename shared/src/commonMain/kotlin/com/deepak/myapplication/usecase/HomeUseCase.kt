@@ -24,6 +24,14 @@ class HomeUseCase constructor(
         }
     }
 
+    suspend fun getPatientCareTeam(): AppRequest{
+        return getPatientId()?.let { patientId ->
+            patientRepository.getPatientCareTeam(patientId)
+        } ?: kotlin.run {
+            AppRequest.Error(Exception("Patient should not be null"))
+        }
+    }
+
     suspend fun getClinicDetails(): AppRequest {
         return dataMapper.getClinicDataFromResponse()
     }

@@ -17,16 +17,18 @@ struct LoginScreen: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 100, height: 100)
                 .padding()
+            
             Text("Login").font(.largeTitle)
                 .bold()
                 .padding()
-            TextField("User name", text: $viewModel.userName)
+            
+            TextField("Email", text: $viewModel.email)
                 .padding()
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
             
-            TextField("Password", text: $viewModel.password)
+            SecureField("Password", text: $viewModel.password)
                 .padding()
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
@@ -42,7 +44,10 @@ struct LoginScreen: View {
                     .foregroundColor(Color.white)
                     .background(Color.blue)
                     .cornerRadius(15)
-            })
+            }).fullScreenCover(isPresented: $viewModel.loginSuccess) {
+                TabBarView()
+            }
+            
             NavigationLink(destination: UserRegistrationScreen(viewModel: RegistrationViewModel()), label: {
                 Text("New User?")
                     .padding()
@@ -51,7 +56,6 @@ struct LoginScreen: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(16)
-                    
             })
             
             if viewModel.error {
@@ -63,6 +67,5 @@ struct LoginScreen: View {
                     .foregroundColor(Color.red)
             }
         }
-        
     }
 }
