@@ -33,6 +33,6 @@ package com.deepak.myapplication.model
 @kotlinx.serialization.Serializable
 data class PatientDataResp(
     val resourceType:String,
-    val id:String,
+    val id:String?,
     val name: List<Name>?
 )

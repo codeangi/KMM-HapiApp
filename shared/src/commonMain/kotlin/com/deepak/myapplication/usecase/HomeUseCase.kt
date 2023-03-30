@@ -19,6 +19,14 @@ class HomeUseCase constructor(
             AppRequest.Error(Exception("Patient should not be null"))
         }
     }
+
+    suspend fun getPatientCareTeam(): AppRequest{
+        return getPatientId()?.let { patientId ->
+            patientRepository.getPatientCareTeam(patientId)
+        } ?: kotlin.run {
+            AppRequest.Error(Exception("Patient should not be null"))
+        }
+    }
 }
 
 class KMPHomeUseCaseHelper : KoinComponent {

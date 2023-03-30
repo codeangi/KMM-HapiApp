@@ -34,7 +34,6 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
 
     fun getPatientDetails() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("HomeViewModel","Fetching patient details")
             val data = homeUseCase.getPatientDetails()
             Log.d("HomeViewModel","patient details:$data")
             if (data is AppRequest.Result<*> && data.result is PatientDataResp) {
@@ -44,6 +43,8 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
                     homeUiState.value = homeUiState.value.copy(patientName = name)
                 }
             }
+            val careData = homeUseCase.getPatientCareTeam()
+            Log.d("HomeViewModel","patient care details:$careData")
         }
     }
 }
