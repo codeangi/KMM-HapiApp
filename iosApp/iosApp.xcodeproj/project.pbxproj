@@ -29,6 +29,8 @@
 		FCA27A4429D2BF5B00A4D13B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA27A4329D2BF5B00A4D13B /* Extensions.swift */; };
 		FCA665EE29D2ECB100C11B2C /* DoctorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA665ED29D2ECB100C11B2C /* DoctorModel.swift */; };
 		FCA665F029D2FB3F00C11B2C /* ClinicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA665EF29D2FB3F00C11B2C /* ClinicModel.swift */; };
+		FCE8423A29D4401F0046A6E5 /* AppointmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */; };
+		FCE8423C29D4405D0046A6E5 /* AppointmentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE8423B29D4405D0046A6E5 /* AppointmentModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +60,8 @@
 		FCA27A4329D2BF5B00A4D13B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		FCA665ED29D2ECB100C11B2C /* DoctorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorModel.swift; sourceTree = "<group>"; };
 		FCA665EF29D2FB3F00C11B2C /* ClinicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicModel.swift; sourceTree = "<group>"; };
+		FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentViewModel.swift; sourceTree = "<group>"; };
+		FCE8423B29D4405D0046A6E5 /* AppointmentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +208,8 @@
 			isa = PBXGroup;
 			children = (
 				FCA27A3829D1D6B600A4D13B /* AppointmentScreen.swift */,
+				FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */,
+				FCE8423B29D4405D0046A6E5 /* AppointmentModel.swift */,
 			);
 			path = Appointments;
 			sourceTree = "<group>";
@@ -358,10 +364,12 @@
 				D2DC4A6629C3389E00D1AD69 /* UserRegistrationScreen.swift in Sources */,
 				FC6A9A1929D32CFC00A2ACB7 /* EmptyView.swift in Sources */,
 				7555FF83242A565900829871 /* SceneView.swift in Sources */,
+				FCE8423C29D4405D0046A6E5 /* AppointmentModel.swift in Sources */,
 				FCA665F029D2FB3F00C11B2C /* ClinicModel.swift in Sources */,
 				FCA27A4429D2BF5B00A4D13B /* Extensions.swift in Sources */,
 				D2DC4A6A29C44F4300D1AD69 /* LoginScreen.swift in Sources */,
 				FCA27A4129D2AB9300A4D13B /* HapiHomeViewModel.swift in Sources */,
+				FCE8423A29D4401F0046A6E5 /* AppointmentViewModel.swift in Sources */,
 				FCA27A3929D1D6B600A4D13B /* AppointmentScreen.swift in Sources */,
 				FCA27A3629D1C79000A4D13B /* MessageScreen.swift in Sources */,
 				FC6A9A1B29D32D2800A2ACB7 /* EmptyViewModel.swift in Sources */,
