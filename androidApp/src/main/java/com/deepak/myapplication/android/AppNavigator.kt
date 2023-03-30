@@ -5,7 +5,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.deepak.myapplication.android.feature.home.HomeScreen
 import com.deepak.myapplication.android.feature.login.LoginScreen
 import com.deepak.myapplication.android.feature.registration.UserRegistrationScreen
 import com.deepak.myapplication.android.feature.splash.SplashScreen
@@ -39,8 +38,7 @@ fun AppNavigator(
             })
         }
         composable(Routes.HOME_SCREEN) {
-            HomeScreen()
-            MainScreenView()
+            DashboardScreenView()
         }
     }
 }
