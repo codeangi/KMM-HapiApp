@@ -21,7 +21,7 @@ struct TabBarView: View {
                     Image(systemName: "message")
                     Text("Message")
                 }
-            AppointmentScreen()
+            AppointmentScreen(viewModel: AppointmentViewModel())
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Appointment")
