@@ -2,6 +2,7 @@ package com.deepak.myapplication.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.deepak.myapplication.datamapper.AppointmentDataMapper
 import com.deepak.myapplication.datamapper.HomeDataMapper
 import com.deepak.myapplication.infra.getNetworkClient
 import com.deepak.myapplication.local.DataBase
@@ -13,6 +14,7 @@ import com.deepak.myapplication.repository.PatientRepository
 import com.deepak.myapplication.repository.PatientRepositoryImpl
 import com.deepak.myapplication.repository.UserRepository
 import com.deepak.myapplication.repository.UserRepositoryImpl
+import com.deepak.myapplication.usecase.AppointmentUseCase
 import com.deepak.myapplication.usecase.HomeUseCase
 import com.deepak.myapplication.usecase.LoginUseCase
 import com.deepak.myapplication.usecase.UserRegistrationUseCase
@@ -41,6 +43,8 @@ val commonModule = module {
     factory { UserRegistrationUseCase(get(), get()) }
     factory { HomeUseCase(get(), get(), get()) }
     factory { HomeDataMapper() }
+    factory { AppointmentUseCase(get(), get(), get()) }
+    factory { AppointmentDataMapper() }
     factory <PatientRepository>{ PatientRepositoryImpl(get()) }
 
 }
