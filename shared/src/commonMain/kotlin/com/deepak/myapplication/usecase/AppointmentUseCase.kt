@@ -4,6 +4,8 @@ import com.deepak.myapplication.datamapper.AppointmentDataMapper
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.repository.PatientRepository
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AppointmentUseCase  constructor(
     private val userSettingsRepository: UserSettingsRepository,
@@ -23,4 +25,8 @@ class AppointmentUseCase  constructor(
             AppRequest.Error(Exception("Patient should not be null"))
         }
     }
+}
+
+class KMPAppointmentUseCaseHelper : KoinComponent {
+    val appointmentUseCase: AppointmentUseCase by inject()
 }
