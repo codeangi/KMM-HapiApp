@@ -12,6 +12,7 @@ import com.deepak.myapplication.repository.PatientRepository
 import com.deepak.myapplication.repository.PatientRepositoryImpl
 import com.deepak.myapplication.repository.UserRepository
 import com.deepak.myapplication.repository.UserRepositoryImpl
+import com.deepak.myapplication.usecase.AppointmentUseCase
 import com.deepak.myapplication.usecase.HomeUseCase
 import com.deepak.myapplication.usecase.LoginUseCase
 import com.deepak.myapplication.usecase.UserRegistrationUseCase
@@ -38,8 +39,9 @@ val commonModule = module {
     factory<UserRepository> { UserRepositoryImpl(get()) }
     factory { LoginUseCase(get(), get()) }
     factory { UserRegistrationUseCase(get(), get()) }
-    factory { HomeUseCase(get(), get()) }
-    factory <PatientRepository>{ PatientRepositoryImpl(get()) }
+    factory { HomeUseCase(get(), get(), get()) }
+    factory<PatientRepository> { PatientRepositoryImpl(get(), get()) }
+    factory { AppointmentUseCase(get(), get(), get()) }
 
 }
 

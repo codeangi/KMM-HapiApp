@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.model.PatientDataResp
+import com.deepak.myapplication.usecase.AppointmentUseCase
 import com.deepak.myapplication.usecase.HomeUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,10 @@ data class HomeViewModelState(
 
 )
 
-class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewModel() {
+class HomeViewModel constructor(
+    private val homeUseCase: HomeUseCase,
+    private val appointmentUseCase: AppointmentUseCase
+) : ViewModel() {
 
     var homeUiState = MutableStateFlow(HomeViewModelState())
         private set
@@ -34,17 +38,23 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
 
     fun getPatientDetails() {
         viewModelScope.launch(Dispatchers.IO) {
+
             val data = homeUseCase.getPatientDetails()
-            Log.d("HomeViewModel","patient details:$data")
+            Log.d("HomeViewModel", "patient details:$data")
             if (data is AppRequest.Result<*> && data.result is PatientDataResp) {
                 (data.result as PatientDataResp).name?.firstOrNull()?.let { nameData ->
                     val name = nameData.given?.reduce { startName, name -> "$startName $name" }
-                    Log.d("HomeViewModel","patient name:$name")
+                    Log.d("HomeViewModel", "patient name:$name")
                     homeUiState.value = homeUiState.value.copy(patientName = name)
                 }
             }
             val careData = homeUseCase.getPatientCareTeam()
-            Log.d("HomeViewModel","patient care details:$careData")
+            Log.d("HomeViewModel", "patient care details:$careData")
+            val accessTokenData = homeUseCase.getAccessToken()
+            Log.d("HomeViewModel", "Access TokenData:$accessTokenData")
+            val appointmentData = appointmentUseCase.getPatientPastAppointments()
+            Log.d("HomeViewModel", "Appointment Data:$appointmentData")
+
         }
     }
 }
