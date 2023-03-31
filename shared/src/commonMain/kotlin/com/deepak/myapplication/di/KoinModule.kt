@@ -8,14 +8,8 @@ import com.deepak.myapplication.local.DataStoreProvider
 import com.deepak.myapplication.local.DatabaseDriverFactory
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.platformModule
-import com.deepak.myapplication.repository.PatientRepository
-import com.deepak.myapplication.repository.PatientRepositoryImpl
-import com.deepak.myapplication.repository.UserRepository
-import com.deepak.myapplication.repository.UserRepositoryImpl
-import com.deepak.myapplication.usecase.AppointmentUseCase
-import com.deepak.myapplication.usecase.HomeUseCase
-import com.deepak.myapplication.usecase.LoginUseCase
-import com.deepak.myapplication.usecase.UserRegistrationUseCase
+import com.deepak.myapplication.repository.*
+import com.deepak.myapplication.usecase.*
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -42,6 +36,8 @@ val commonModule = module {
     factory { HomeUseCase(get(), get(), get()) }
     factory<PatientRepository> { PatientRepositoryImpl(get(), get()) }
     factory { AppointmentUseCase(get(), get(), get()) }
+    factory<PractitionerRepository> { PractitionerRepositoryImpl(get()) }
+    factory { PractitionerUseCase(get()) }
 
 }
 
