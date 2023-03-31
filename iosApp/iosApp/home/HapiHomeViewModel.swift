@@ -10,11 +10,11 @@ import Foundation
 
 class HapiHomeViewModel: ObservableObject {
     
+    @Published var path: [String] = []
     @Published var options: [String] = []
     @Published var doctors: [DoctorModel] = []
     @Published var clinics: [ClinicModel] = []
     @Published var medicalRecords: [String] = []
-    @Published var navigateToEmptyScreen: Bool = false
     @Published var emptyScreenTitle: String = ""
     
     init() {
@@ -47,7 +47,6 @@ class HapiHomeViewModel: ObservableObject {
     }
     
     func navigateToEmptyView(screenTitle: String) {
-        emptyScreenTitle = screenTitle
-        navigateToEmptyScreen = true
+        path.append(screenTitle)
     }
 }
