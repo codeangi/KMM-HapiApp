@@ -19,7 +19,7 @@ val appModule = module {
             UserRegistrationViewModel(get())
     }
     viewModel{
-        HomeViewModel(get())
+        HomeViewModel(get(), get())
     }
     viewModel {
         SplashViewModel(get())

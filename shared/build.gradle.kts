@@ -42,6 +42,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
+                implementation("io.ktor:ktor-client-auth:$ktorVersion")
                // implementation("ch.qos.logback:logback-classic:1.4.6")
 
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
@@ -50,6 +51,9 @@ kotlin {
                 implementation("io.insert-koin:koin-test:${koinVersion}")
                 //Preference
                 api ("androidx.datastore:datastore-preferences-core:1.1.0-alpha03")
+
+                //Date and time
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
             }
         }
         val commonTest by getting {

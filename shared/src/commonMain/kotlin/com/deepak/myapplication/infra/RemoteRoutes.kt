@@ -2,6 +2,7 @@ package com.deepak.myapplication.infra
 
 //private const val HAPI_BASE_URL = "https://hapi.fhir.org/baseR4/"
 private const val YCARE_BASE_URL = "https://ycares-dev-hapi.ymedia.in/fhir/"
+private const val YML_DEV_SERVER = "https://ycares-dev-backend.ymedia.in/"
 const val BASE_URL = YCARE_BASE_URL
 object RemoteRoutes {
 
@@ -11,6 +12,8 @@ object RemoteRoutes {
 
     const val GET_PATIENT_CARE_TEAM = BASE_URL +"CareTeam"
 
+    const val ACCESS_TOKEN = "${YML_DEV_SERVER}token"
+    const val APPOINTMENT = "${YML_DEV_SERVER}fhir/appointments"
     object Parameters{
         const val Participant = "participant"
     }
