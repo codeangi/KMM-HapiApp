@@ -7,7 +7,7 @@ struct iOSApp: App {
     }
 	var body: some Scene {
 		WindowGroup {
-           SceneView()
+           SceneView(viewModel: LoginStatusViewModel())
 		}
 	}
 }
