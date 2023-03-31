@@ -11,7 +11,15 @@ import SwiftUI
 struct ProfileScreen: View {
     var body: some View {
         VStack {
-            Text("Profile Screen")
+            Button("LOGOUT") {
+                
+            }
+            .padding()
+            .font(.title2)
+            .fontWeight(.bold)
+            .foregroundColor(.white)
+            .background(Color.customCyan)
+            .cornerRadius(5)
         }
     }
 }

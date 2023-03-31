@@ -18,6 +18,7 @@
 		D2DC4A6A29C44F4300D1AD69 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DC4A6929C44F4300D1AD69 /* LoginScreen.swift */; };
 		D2DC4A6E29C8684000D1AD69 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DC4A6D29C8684000D1AD69 /* LoginViewModel.swift */; };
 		D2DC4A7229C98F0C00D1AD69 /* HapiHomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DC4A7129C98F0C00D1AD69 /* HapiHomeScreen.swift */; };
+		FC237B0B29D6CD2E00EC373F /* LoginStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC237B0A29D6CD2E00EC373F /* LoginStatusViewModel.swift */; };
 		FC272E2429D5C23700A967C1 /* ReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC272E2329D5C23700A967C1 /* ReasonView.swift */; };
 		FC272E2629D5C7DE00A967C1 /* TypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC272E2529D5C7DE00A967C1 /* TypeView.swift */; };
 		FC272E2929D5C86400A967C1 /* CommonModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC272E2829D5C86400A967C1 /* CommonModels.swift */; };
@@ -57,6 +58,7 @@
 		D2DC4A6D29C8684000D1AD69 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		D2DC4A7129C98F0C00D1AD69 /* HapiHomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapiHomeScreen.swift; sourceTree = "<group>"; };
 		EC5C93176C4C6D5D3FADA40D /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
+		FC237B0A29D6CD2E00EC373F /* LoginStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStatusViewModel.swift; sourceTree = "<group>"; };
 		FC272E2329D5C23700A967C1 /* ReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReasonView.swift; sourceTree = "<group>"; };
 		FC272E2529D5C7DE00A967C1 /* TypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeView.swift; sourceTree = "<group>"; };
 		FC272E2829D5C86400A967C1 /* CommonModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonModels.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				7555FF82242A565900829871 /* SceneView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
+				FC237B0A29D6CD2E00EC373F /* LoginStatusViewModel.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 			);
 			path = iosApp;
@@ -387,6 +390,7 @@
 				FC5A114029D573890025A371 /* CareTeamListView.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				FCA27A3329D1C4DB00A4D13B /* TabBarView.swift in Sources */,
+				FC237B0B29D6CD2E00EC373F /* LoginStatusViewModel.swift in Sources */,
 				D2885CDE29D1539A00705E29 /* AppModule.swift in Sources */,
 				FC272E2929D5C86400A967C1 /* CommonModels.swift in Sources */,
 				FC272E2429D5C23700A967C1 /* ReasonView.swift in Sources */,
