@@ -44,12 +44,13 @@ class RegistrationViewModel: ObservableObject {
                     if let kotlinBoolean = kotlinBoolean, kotlinBoolean as! Bool {
                         self.isLoading = false
                         self.registrationStatus = true
-                        print("Status of data insert:\(kotlinBoolean)")
-                    }else {
-                        print("Status of data insert:\(kotlinBoolean)")
+                    } else {
+                        self.error = .userExisting
+                        self.errorMessage = "User Already Exists"
                     }
-                }else {
-                    print("Error in insert:\((error as? NSError)?.code)")
+                } else {
+                    self.error = .unknownError
+                    self.errorMessage = error?.localizedDescription ?? "Unknown Error"
                 }
             })
         }
