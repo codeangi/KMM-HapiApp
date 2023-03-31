@@ -72,6 +72,10 @@ class AppointmentUseCase(
     suspend fun getAppointmentsTimeSlot(): AppRequest {
         return appointmentDataMapper.getAppointmentsTimeSlot()
     }
+
+    suspend fun getPatientAppointmentSchedules(): AppRequest {
+        return appointmentDataMapper.getPatientAppointmentSchedules()
+    }
 }
 
 class KMPAppointmentUseCaseHelper : KoinComponent {
