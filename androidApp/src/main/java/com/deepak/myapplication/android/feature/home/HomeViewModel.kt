@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
+import com.deepak.myapplication.model.ClinicData
+import com.deepak.myapplication.model.DoctorData
 import com.deepak.myapplication.model.PatientDataResp
 import com.deepak.myapplication.usecase.HomeUseCase
 import kotlinx.coroutines.Dispatchers
@@ -14,8 +16,6 @@ data class HomeViewModelState(
     val userId: String = "",
     val patientId: String = "",
     val patientName: String? = ""
-
-
 )
 
 class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewModel() {
@@ -23,7 +23,12 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
     var homeUiState = MutableStateFlow(HomeViewModelState())
         private set
 
+    var doctorDataUiState = MutableStateFlow(listOf(DoctorData()))
+    var clinicDataUiState = MutableStateFlow(listOf(ClinicData()))
+
     init {
+        getClinicData()
+        getDoctorsData()
         viewModelScope.launch {
             homeUiState.value = homeUiState.value.copy(
                 userId = homeUseCase.getUserId() ?: "",
@@ -45,6 +50,28 @@ class HomeViewModel constructor(private val homeUseCase: HomeUseCase) : ViewMode
             }
             val careData = homeUseCase.getPatientCareTeam()
             Log.d("HomeViewModel","patient care details:$careData")
+        }
+    }
+
+    private fun getDoctorsData() {
+        viewModelScope.launch {
+            val data =  homeUseCase.getDoctorsData()
+            if (data is AppRequest.ListResult<*> && data.result.firstOrNull() is DoctorData) {
+                data.result.let {
+                    doctorDataUiState.value = data.result.filterIsInstance<DoctorData>()
+                }
+            }
+        }
+    }
+
+    private fun getClinicData() {
+        viewModelScope.launch {
+            val data = homeUseCase.getClinicDetails()
+            if (data is AppRequest.ListResult<*>) {
+                data.result.let {
+                    clinicDataUiState.value = data.result.filterIsInstance<ClinicData>().takeIf { it.size == data.result.size } ?: emptyList()
+                }
+            }
         }
     }
 }
