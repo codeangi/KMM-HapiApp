@@ -21,9 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.deepak.myapplication.android.feature.appointments.AppointmentCareTeamScreen
-import com.deepak.myapplication.android.feature.appointments.AppointmentsScreen
-import com.deepak.myapplication.android.feature.appointments.CareTeamDoctorDetailsScreen
+import com.deepak.myapplication.android.feature.appointments.*
 import com.deepak.myapplication.android.feature.home.HomeScreen
 import com.deepak.myapplication.android.theme.customCyan
 import org.koin.androidx.compose.koinViewModel
@@ -53,31 +51,33 @@ fun DashboardScreenView() {
     var selectedTab: MutableState<DashboardBottomNavScreen> = remember { mutableStateOf(DashboardBottomNavScreen.Home) }
     Scaffold(
         bottomBar = {
-            BottomNavigation(
-                backgroundColor = Color.White
-            ) {
+            if (mainActivityViewModel.showBottomNavBar.value) {
+                BottomNavigation(
+                    backgroundColor = Color.White
+                ) {
 
-                bottomNavigationItems.forEach { screen ->
-                    BottomNavigationItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        label = { Text(screen.title, fontSize = 9.sp, softWrap = false) },
-                        selected = selectedTab.value == screen,
-                        onClick = {
-                            navController.navigate(screen.route) {
+                    bottomNavigationItems.forEach { screen ->
+                        BottomNavigationItem(
+                            icon = { Icon(screen.icon, contentDescription = screen.title) },
+                            label = { Text(screen.title, fontSize = 9.sp, softWrap = false) },
+                            selected = selectedTab.value == screen,
+                            onClick = {
+                                navController.navigate(screen.route) {
 
-                                navController.graph.startDestinationRoute?.let { screen_route ->
-                                    popUpTo(screen_route) {
-                                        saveState = true
+                                    navController.graph.startDestinationRoute?.let { screen_route ->
+                                        popUpTo(screen_route) {
+                                            saveState = true
+                                        }
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                            selectedTab.value = screen
-                        },
-                        selectedContentColor = customCyan,
-                        unselectedContentColor = Color.Gray
-                    )
+                                selectedTab.value = screen
+                            },
+                            selectedContentColor = customCyan,
+                            unselectedContentColor = Color.Gray
+                        )
+                    }
                 }
             }
         }
@@ -119,9 +119,42 @@ fun BottomBarNavigationGraph(
             )
         }
         composable(Routes.DOCTOR_DETAILS_SCREEN) {
-            CareTeamDoctorDetailsScreen {
-                navController.popBackStack()
-            }
+            CareTeamDoctorDetailsScreen (
+                onBack = {
+                    navController.popBackStack()
+                },
+                onScheduleAppointmentClicked = {
+                    mainActivityViewModel.showBottomNavBar.value = false
+                    navController.navigate(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN)
+                }
+            )
+        }
+
+        composable(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN) {
+            ScheduleAppointmentFlowScreen(
+                onBack = {
+                    navController.popBackStack()
+                    mainActivityViewModel.showBottomNavBar.value = true
+                },
+                onAppointmentScheduleClicked = {
+                    navController.navigate(Routes.SCHEDULE_APPOINTMENT_SUCCESS_SCREEN)
+                }
+            )
+        }
+
+        composable(Routes.SCHEDULE_APPOINTMENT_SUCCESS_SCREEN) {
+            AppointmentScheduledSuccessScreen(
+                onDoneClicked = {
+                    navController.popBackStack(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN, inclusive = true)
+                    navController.navigate(DashboardBottomNavScreen.Appointments.route)
+                    mainActivityViewModel.showBottomNavBar.value = true
+                },
+                onViewDetailsClicked = {
+                    navController.popBackStack(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN, inclusive = true)
+                    navController.navigate(DashboardBottomNavScreen.Appointments.route)
+                    mainActivityViewModel.showBottomNavBar.value = true
+                }
+            )
         }
     }
 }

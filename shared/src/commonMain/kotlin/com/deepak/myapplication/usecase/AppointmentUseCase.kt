@@ -25,6 +25,10 @@ class AppointmentUseCase  constructor(
             AppRequest.Error(Exception("Patient should not be null"))
         }
     }
+
+    suspend fun getAppointmentsTimeSlot(): AppRequest {
+        return appointmentDataMapper.getAppointmentsTimeSlot()
+    }
 }
 
 class KMPAppointmentUseCaseHelper : KoinComponent {

@@ -5,10 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
-import com.deepak.myapplication.model.AppointmentScheduleData
-import com.deepak.myapplication.model.CareTeamData
-import com.deepak.myapplication.model.ClinicData
-import com.deepak.myapplication.model.DoctorData
+import com.deepak.myapplication.model.*
 import com.deepak.myapplication.usecase.AppointmentUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -22,6 +19,8 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
     var pastAppointments = mutableStateOf<List<AppointmentScheduleData>>(emptyList())
 
     var careTeamDataState = mutableStateOf<List<CareTeamData>>(emptyList())
+
+    var timeSlotDataState = mutableStateOf<List<TimeSlotData>>(emptyList())
 
     fun getPatientAppointmentSchedules() {
         viewModelScope.launch {
@@ -43,6 +42,25 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
                     careTeamDataState.value = data.result.filterIsInstance<CareTeamData>().takeIf { it.size == data.result.size } ?: emptyList()
+                }
+            }
+        }
+    }
+
+    fun getAppointmentReasonsList(): List<String> {
+        return listOf(
+            "Back Pain",
+            "Headache",
+            "Migrane"
+        )
+    }
+
+    fun getAppointmentTimeSlots() {
+        viewModelScope.launch {
+            val data = appointmentUseCase.getAppointmentsTimeSlot()
+            if (data is AppRequest.ListResult<*>) {
+                data.result.let {
+                    timeSlotDataState.value = data.result.filterIsInstance<TimeSlotData>().takeIf { it.size == data.result.size } ?: emptyList()
                 }
             }
         }

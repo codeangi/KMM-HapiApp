@@ -22,7 +22,10 @@ import com.deepak.myapplication.model.CareTeamData
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CareTeamDoctorDetailsScreen(onBack : () -> Unit) {
+fun CareTeamDoctorDetailsScreen(
+    onBack : () -> Unit,
+    onScheduleAppointmentClicked: () -> Unit
+) {
     val mainActivityViewModel: MainActivityViewModel = koinViewModel()
     val selectedCareDoctor = mainActivityViewModel.selectedCareTeamDoctor
     Scaffold(modifier = Modifier.fillMaxSize()) { contentPadding ->
@@ -103,10 +106,11 @@ fun CareTeamDoctorDetailsScreen(onBack : () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = {},
+                    onClick = { onScheduleAppointmentClicked() },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = viewPort)
+                        .padding(horizontal = viewPort),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = customCyan)
                 ) {
                     Text(text = "SCHEDULE APPOINTMENT", style = MaterialTheme.typography.body1,fontWeight = FontWeight.W700, color = Color.White, modifier = Modifier.padding(horizontal = viewPort))
                 }
