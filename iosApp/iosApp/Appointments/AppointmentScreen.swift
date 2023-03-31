@@ -13,7 +13,7 @@ struct AppointmentScreen: View {
     @ObservedObject var viewModel: AppointmentViewModel
     
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $viewModel.path) {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("Today")
@@ -49,7 +49,7 @@ struct AppointmentScreen: View {
                 .padding(20)
                 .navigationTitle("Appointments")
                 .toolbar {
-                    Button(action: { }, label: {
+                    Button(action: { viewModel.appendScreen(screenType: .careTeam) }, label: {
                         Image(systemName: "plus")
                             .resizable()
                             .frame(width: 15, height: 15)
@@ -64,9 +64,31 @@ struct AppointmentScreen: View {
                     .background(Color.customCyan)
                     .cornerRadius(30)
                 }
+                .navigationDestination(for: AppointmentScreens.self) { screen in
+                    switch screen {
+                    case .careTeam:
+                        CareTeamListView()
+                            .environmentObject(viewModel)
+                    case .careDetail:
+                        CareDetailsView()
+                            .environmentObject(viewModel)
+                    case .reason:
+                        ReasonView()
+                            .environmentObject(viewModel)
+                    case .type:
+                        TypeView()
+                            .environmentObject(viewModel)
+                    case .location:
+                        LocationsView()
+                            .environmentObject(viewModel)
+                    case .dateTime:
+                        DateTimeView()
+                            .environmentObject(viewModel)
+                    default:
+                        EmptyView(viewModel: EmptyViewModel(title: "Empty"))
+                    }
+                }
             }
-            
-
         }
     }
 }
