@@ -39,7 +39,7 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
 
     fun getMyCareTeamData() {
         viewModelScope.launch {
-            val data = appointmentUseCase.getMyCareTeamData()
+            val data = appointmentUseCase.getPatientCareTeam()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
                     careTeamDataState.value = data.result.filterIsInstance<CareTeamData>().takeIf { it.size == data.result.size } ?: emptyList()

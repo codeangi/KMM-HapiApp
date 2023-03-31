@@ -26,11 +26,12 @@ class AppointmentUseCase(
     }
 
     suspend fun getPatientCareTeam(): AppRequest {
-        return getPatientId()?.let { patientId ->
+        val result = getPatientId()?.let { patientId ->
             patientRepository.getPatientCareTeam(patientId)
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
         }
+        return appointmentDataMapper.getMyCareTeamData(result)
     }
 
     suspend fun getPatientFutureAppointments(): AppRequest {
