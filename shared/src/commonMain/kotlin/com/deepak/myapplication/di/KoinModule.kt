@@ -2,6 +2,7 @@ package com.deepak.myapplication.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.deepak.myapplication.datamapper.HomeDataMapper
 import com.deepak.myapplication.infra.getNetworkClient
 import com.deepak.myapplication.local.DataBase
 import com.deepak.myapplication.local.DataStoreProvider
@@ -33,12 +34,12 @@ val commonModule = module {
     factory<UserRepository> { UserRepositoryImpl(get()) }
     factory { LoginUseCase(get(), get()) }
     factory { UserRegistrationUseCase(get(), get()) }
-    factory { HomeUseCase(get(), get(), get()) }
+    factory { HomeUseCase(get(), get(), get(), get()) }
     factory<PatientRepository> { PatientRepositoryImpl(get(), get()) }
     factory { AppointmentUseCase(get(), get(), get()) }
     factory<PractitionerRepository> { PractitionerRepositoryImpl(get()) }
     factory { PractitionerUseCase(get()) }
-
+    factory { HomeDataMapper() }
 }
 
 internal fun provideDataBase(databaseDriverFactory: DatabaseDriverFactory): DataBase {
