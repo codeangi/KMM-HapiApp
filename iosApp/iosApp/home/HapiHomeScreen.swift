@@ -13,48 +13,55 @@ struct HapiHomeScreen: View {
     @ObservedObject var viewModel: HapiHomeViewModel
     
     var body: some View {
-        VStack(alignment: .leading) {
-            NavBar()
-            Divider()
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading) {
-                    Header()
-                    OptionCells()
-                        .environmentObject(viewModel)
-                    BookNowCard()
-                    Text("My Doctors")
-                        .foregroundColor(Color.gray)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .padding(.top, 20)
-                    DoctorsCells()
-                        .environmentObject(viewModel)
-                    Text("Clinics")
-                        .foregroundColor(Color.gray)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .padding(.top, 20)
-                    ClinicCells()
-                        .environmentObject(viewModel)
-                    Text("Medical Records")
-                        .foregroundColor(Color.gray)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .padding(.top, 20)
-                    MedicalRecordsCells()
-                        .environmentObject(viewModel)
+        NavigationStack(path: $viewModel.path) {
+            VStack(alignment: .leading) {
+                NavBar()
+                    .environmentObject(viewModel)
+                Divider()
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(alignment: .leading) {
+                        Header()
+                        OptionCells()
+                            .environmentObject(viewModel)
+                        BookNowCard()
+                            .environmentObject(viewModel)
+                        Text("My Doctors")
+                            .foregroundColor(Color.gray)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.top, 20)
+                        DoctorsCells()
+                            .environmentObject(viewModel)
+                        Text("Clinics")
+                            .foregroundColor(Color.gray)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.top, 20)
+                        ClinicCells()
+                            .environmentObject(viewModel)
+                        Text("Medical Records")
+                            .foregroundColor(Color.gray)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.top, 20)
+                        MedicalRecordsCells()
+                            .environmentObject(viewModel)
+                    }
                 }
+                Spacer()
             }
-            Spacer()
-        }
-        .padding()
-        .navigationDestination(for: String.self) { title in
-            EmptyView(viewModel: EmptyViewModel(title: title))
+            .padding()
+            .navigationDestination(for: String.self) { title in
+                EmptyView(viewModel: EmptyViewModel(title: title))
+            }
         }
     }
 }
 
 struct NavBar: View {
+    
+    @EnvironmentObject var viewModel: HapiHomeViewModel
+    
     var body: some View {
         HStack {
             Image(systemName: "house")
@@ -70,6 +77,9 @@ struct NavBar: View {
                 .resizable()
                 .foregroundColor(.customCyan)
                 .frame(width: 25, height: 25)
+                .onTapGesture {
+                    viewModel.navigateToEmptyView(screenTitle: "Contact")
+                }
         }
     }
 }
@@ -116,6 +126,9 @@ struct OptionCells: View {
 }
 
 struct BookNowCard: View {
+    
+    @EnvironmentObject var viewModel: HapiHomeViewModel
+    
     var body: some View {
         HStack {
             Image(systemName: "bolt.circle.fill")
@@ -135,6 +148,9 @@ struct BookNowCard: View {
             Image(systemName: "arrow.right")
                 .foregroundColor(.white)
         }
+        .onTapGesture(perform: {
+            viewModel.navigateToEmptyView(screenTitle: "Book now")
+        })
         .padding(15)
         .background(Color.customBlue)
         .cornerRadius(10)
@@ -166,6 +182,9 @@ struct DoctorsCells: View {
                             .font(.caption)
                             .foregroundColor(Color.gray)
                     }
+                    .onTapGesture(perform: {
+                        viewModel.navigateToEmptyView(screenTitle: "Doctor Details")
+                    })
                     .frame(width: 150)
                 }
             }
@@ -202,6 +221,9 @@ struct ClinicCells: View {
                         .padding(10)
                         
                     }
+                    .onTapGesture(perform: {
+                        viewModel.navigateToEmptyView(screenTitle: "Clinic Details")
+                    })
                     .frame(width: 250)
                     .padding(.bottom, 10)
                     .background(Color.lightGrey)
@@ -233,9 +255,12 @@ struct MedicalRecordsCells: View {
                     .padding(10)
                     Divider()
                 }
+                .onTapGesture(perform: {
+                    viewModel.navigateToEmptyView(screenTitle: medicalRecord)
+                })
                 .padding(.bottom, 10)
             }
-            Button(action: { viewModel.navigateToEmptyView(screenTitle: "View all records") }, label: {
+            Button(action: { viewModel.navigateToEmptyView(screenTitle: "All Records") }, label: {
                 Text("VIEW ALL RECORDS")
                     .padding()
                     .font(.headline)
