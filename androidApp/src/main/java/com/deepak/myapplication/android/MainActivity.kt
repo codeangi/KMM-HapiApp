@@ -21,8 +21,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.deepak.myapplication.android.feature.appointments.*
 import com.deepak.myapplication.android.feature.home.HomeScreen
 import com.deepak.myapplication.android.theme.customCyan
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,34 +46,38 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DashboardScreenView() {
     val navController = rememberNavController()
-    var selectedTab: MutableState<Screen> = remember { mutableStateOf(Screen.Home) }
+    val mainActivityViewModel = koinViewModel<MainActivityViewModel>()
+
+    var selectedTab: MutableState<DashboardBottomNavScreen> = remember { mutableStateOf(DashboardBottomNavScreen.Home) }
     Scaffold(
         bottomBar = {
-            BottomNavigation(
-                backgroundColor = Color.White
-            ) {
+            if (mainActivityViewModel.showBottomNavBar.value) {
+                BottomNavigation(
+                    backgroundColor = Color.White
+                ) {
 
-                bottomNavigationItems.forEach { screen ->
-                    BottomNavigationItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        label = { Text(screen.title, fontSize = 9.sp, softWrap = false) },
-                        selected = selectedTab.value == screen,
-                        onClick = {
-                            navController.navigate(screen.route) {
+                    bottomNavigationItems.forEach { screen ->
+                        BottomNavigationItem(
+                            icon = { Icon(screen.icon, contentDescription = screen.title) },
+                            label = { Text(screen.title, fontSize = 9.sp, softWrap = false) },
+                            selected = selectedTab.value == screen,
+                            onClick = {
+                                navController.navigate(screen.route) {
 
-                                navController.graph.startDestinationRoute?.let { screen_route ->
-                                    popUpTo(screen_route) {
-                                        saveState = true
+                                    navController.graph.startDestinationRoute?.let { screen_route ->
+                                        popUpTo(screen_route) {
+                                            saveState = true
+                                        }
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                            selectedTab.value = screen
-                        },
-                        selectedContentColor = customCyan,
-                        unselectedContentColor = Color.Gray
-                    )
+                                selectedTab.value = screen
+                            },
+                            selectedContentColor = customCyan,
+                            unselectedContentColor = Color.Gray
+                        )
+                    }
                 }
             }
         }
@@ -82,19 +88,74 @@ fun DashboardScreenView() {
                 .padding(innerPadding),
             color = MaterialTheme.colors.background
         ) {
-            BottomBarNavigationGraph(navController = navController)
+            BottomBarNavigationGraph(navController = navController, mainActivityViewModel)
         }
     }
 }
 
 @Composable
-fun BottomBarNavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = Screen.Home.route) {
-        composable(Screen.Home.route) { HomeScreen() }
-        composable(Screen.Messages.route) { MessagesScreen() }
-        composable(Screen.Appointments.route) { AppointmentsScreen() }
-        composable(Screen.Medications.route) { MedicationsScreen() }
-        composable(Screen.Profile.route) { ProfileScreen() }
+fun BottomBarNavigationGraph(
+    navController: NavHostController,
+    mainActivityViewModel: MainActivityViewModel
+) {
+    NavHost(navController, startDestination = DashboardBottomNavScreen.Home.route) {
+        composable(DashboardBottomNavScreen.Home.route) { HomeScreen() }
+        composable(DashboardBottomNavScreen.Messages.route) { MessagesScreen() }
+        composable(DashboardBottomNavScreen.Appointments.route) { AppointmentsScreen(
+            onAddAppointmentClicked = {
+                navController.navigate(Routes.APPOINTMENT_CARE_TEAM_SCREEN)
+            }
+        ) }
+        composable(DashboardBottomNavScreen.Medications.route) { MedicationsScreen() }
+        composable(DashboardBottomNavScreen.Profile.route) { ProfileScreen() }
+        composable(DashboardBottomNavScreen.Profile.route) { ProfileScreen() }
+        composable(Routes.APPOINTMENT_CARE_TEAM_SCREEN) {
+            AppointmentCareTeamScreen (
+                onBack = { navController.popBackStack() },
+                onDoctorCardClick = {
+                    mainActivityViewModel.selectedCareTeamDoctor = it
+                    navController.navigate(Routes.DOCTOR_DETAILS_SCREEN)
+                }
+            )
+        }
+        composable(Routes.DOCTOR_DETAILS_SCREEN) {
+            CareTeamDoctorDetailsScreen (
+                onBack = {
+                    navController.popBackStack()
+                },
+                onScheduleAppointmentClicked = {
+                    mainActivityViewModel.showBottomNavBar.value = false
+                    navController.navigate(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN)
+                }
+            )
+        }
+
+        composable(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN) {
+            ScheduleAppointmentFlowScreen(
+                onBack = {
+                    navController.popBackStack()
+                    mainActivityViewModel.showBottomNavBar.value = true
+                },
+                onAppointmentScheduleClicked = {
+                    navController.navigate(Routes.SCHEDULE_APPOINTMENT_SUCCESS_SCREEN)
+                }
+            )
+        }
+
+        composable(Routes.SCHEDULE_APPOINTMENT_SUCCESS_SCREEN) {
+            AppointmentScheduledSuccessScreen(
+                onDoneClicked = {
+                    navController.popBackStack(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN, inclusive = true)
+                    navController.navigate(DashboardBottomNavScreen.Appointments.route)
+                    mainActivityViewModel.showBottomNavBar.value = true
+                },
+                onViewDetailsClicked = {
+                    navController.popBackStack(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN, inclusive = true)
+                    navController.navigate(DashboardBottomNavScreen.Appointments.route)
+                    mainActivityViewModel.showBottomNavBar.value = true
+                }
+            )
+        }
     }
 }
 
@@ -110,30 +171,25 @@ fun DefaultPreview() {
         GreetingView("Hello, Android!")
     }
 }
-sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
-    object Home : Screen("home", "Home", Icons.Filled.Home)
-    object Messages : Screen("messages", "Messages", Icons.Filled.Email)
-    object Appointments : Screen("appointments", "Appointments", Icons.Filled.Call)
-    object Medications : Screen("medications", "Medications", Icons.Filled.Create)
-    object Profile : Screen("profile", "Profile", Icons.Filled.AccountCircle)
+sealed class DashboardBottomNavScreen(val route: String, val title: String, val icon: ImageVector) {
+    object Home : DashboardBottomNavScreen("home", "Home", Icons.Filled.Home)
+    object Messages : DashboardBottomNavScreen("messages", "Messages", Icons.Filled.Email)
+    object Appointments : DashboardBottomNavScreen("appointments", "Appointments", Icons.Filled.Call)
+    object Medications : DashboardBottomNavScreen("medications", "Medications", Icons.Filled.Create)
+    object Profile : DashboardBottomNavScreen("profile", "Profile", Icons.Filled.AccountCircle)
 }
 
 val bottomNavigationItems = listOf(
-    Screen.Home,
-    Screen.Messages,
-    Screen.Appointments,
-    Screen.Medications,
-    Screen.Profile
+    DashboardBottomNavScreen.Home,
+    DashboardBottomNavScreen.Messages,
+    DashboardBottomNavScreen.Appointments,
+    DashboardBottomNavScreen.Medications,
+    DashboardBottomNavScreen.Profile
 )
 
 @Composable
 fun MessagesScreen() {
     Text("Messages Screen")
-}
-
-@Composable
-fun AppointmentsScreen() {
-    Text("Appointments Screen")
 }
 
 @Composable

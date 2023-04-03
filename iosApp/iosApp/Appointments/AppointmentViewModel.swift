@@ -50,6 +50,8 @@ class AppointmentViewModel: ObservableObject {
     @Published var reasons = [String]()
     @Published var types = [TypeModel]()
     @Published var locations = [LocationsModel]()
+    @Published var dateTime = [MonthModel]()
+    @Published var screenWidth = UIScreen.main.bounds.width
 
     init() {
         setPastAppointments()
@@ -59,6 +61,7 @@ class AppointmentViewModel: ObservableObject {
         setReasons()
         setTypes()
         setLocations()
+        setDateTime()
     }
     
     func setPastAppointments() {
@@ -96,6 +99,24 @@ class AppointmentViewModel: ObservableObject {
     func setLocations() {
         let l1 = LocationsModel(place: "Measured Wellness Llc", address: "47 Seaverns Ave #5\nBrookline, MA 0383645323", availableOn: "Attending hours:\n8 AM - 2 PM - Mon, Tue, Wed, Thu, Fri")
         locations = [l1]
+    }
+    
+    func setDateTime() {
+        let t1: [String] = ["6:30 PM", "7:30 PM", "9:30 PM", "10:30 PM"]
+        let t2: [String] = ["6:30 PM", "9:30 PM", "10:30 PM"]
+        let t3: [String] = ["7:30 PM", "8:30 PM"]
+        
+        let d1 = DateModel(date: "14", day: "TUE", time: t2)
+        let d2 = DateModel(date: "16", day: "THU", time: t3)
+        let d3 = DateModel(date: "21", day: "TUE", time: t2)
+        let d4 = DateModel(date: "03", day: "MON", time: t1)
+        let d5 = DateModel(date: "05", day: "WED", time: t3)
+        let d6 = DateModel(date: "07", day: "FRI", time: t1)
+        
+        let m1 = MonthModel(month: "April 2023", dates: [d1, d2, d3])
+        let m2 = MonthModel(month: "May 2023", dates: [d4, d5, d6])
+        
+        dateTime = [m1, m2]
     }
     
     func appendScreen(screenType: AppointmentScreens) {

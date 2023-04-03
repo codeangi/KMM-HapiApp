@@ -21,7 +21,7 @@ struct LocationsView: View {
                     .fontWeight(.bold)
                 ScrollView {
                     ForEach(viewModel.locations, id: \.self) { location in
-                        LocationCell(location: location).environmentObject(viewModel)
+                        LocationCard(location: location).environmentObject(viewModel)
                     }
                 }
                 Spacer()
@@ -36,7 +36,7 @@ struct LocationsView: View {
     }
 }
 
-struct LocationCell: View {
+struct LocationCard: View {
     
     var location: LocationsModel
     @EnvironmentObject var viewModel: AppointmentViewModel
