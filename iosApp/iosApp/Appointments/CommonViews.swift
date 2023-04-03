@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-//import Lottie
+import Lottie
 
 struct ProgressBar: View {
     
@@ -56,19 +56,19 @@ struct LottieView: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView(frame: .zero)
         
-//        let animationView = LottieAnimationView()
-//        animationView.contentMode = .scaleAspectFit
-//        animationView.loopMode = .playOnce
-//
-//        animationView.animation = LottieAnimation.named(lottieFile)
-//        animationView.contentMode = .scaleAspectFit
-//        animationView.play()
-//        
-//        view.addSubview(animationView)
-//        
-//        animationView.translatesAutoresizingMaskIntoConstraints = false
-//        animationView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-//        animationView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        let animationView = LottieAnimationView()
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .playOnce
+
+        animationView.animation = LottieAnimation.named(lottieFile)
+        animationView.contentMode = .scaleAspectFit
+        animationView.play()
+        
+        view.addSubview(animationView)
+        
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        animationView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        animationView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         
         return view
     }
