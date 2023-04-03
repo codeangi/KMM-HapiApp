@@ -28,18 +28,32 @@ fun initKoin() = initKoin {
 }
 
 val commonModule = module {
+    //Infra
     single { getNetworkClient() }
     single { provideDataBase(get()) }
     single { provideDataStore(get()) }
+
+    //User specific
     single { UserSettingsRepository(get()) }
     factory<UserRepository> { UserRepositoryImpl(get()) }
+
+    //Auth
     factory { LoginUseCase(get(), get()) }
     factory { UserRegistrationUseCase(get(), get()) }
+
+    //Home
     factory { HomeUseCase(get(), get(), get(), get()) }
     factory { HomeDataMapper() }
+
+    //Patient
     factory <PatientRepository>{ PatientRepositoryImpl(get(), get()) }
+
+    //Appointment
     factory { AppointmentUseCase(get(), get(), get(), get()) }
     factory { AppointmentDataMapper() }
+
+    //Practitioner
+    factory <PractitionerRepository>{ PractitionerRepositoryImpl(get()) }
     factory { PractitionerUseCase(get()) }
 
 }
