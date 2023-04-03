@@ -10,7 +10,6 @@ object RemoteRoutes {
     fun GET_PATIENT_DETAILS(patientId: String): String {
         return BASE_URL + "Patient/$patientId"
     }
-
     const val GET_PATIENT_CARE_TEAM = BASE_URL + "CareTeam"
 
     const val ACCESS_TOKEN = "${YML_DEV_SERVER}token"
@@ -18,6 +17,8 @@ object RemoteRoutes {
     fun GET_PRACTITIONER_DETAILS(practitionerId: String): String {
         return "${YCARE_BASE_URL}Practitioner/$practitionerId"
     }
+
+    const val SLOT = "${YML_DEV_SERVER}fhir/appointments/\$find"
 
     object Parameters {
         const val Participant = "participant"

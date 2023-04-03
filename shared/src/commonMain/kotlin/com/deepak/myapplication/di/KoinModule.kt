@@ -34,13 +34,13 @@ val commonModule = module {
     factory<UserRepository> { UserRepositoryImpl(get()) }
     factory { LoginUseCase(get(), get()) }
     factory { UserRegistrationUseCase(get(), get()) }
-    factory { HomeUseCase(get(), get(), get(),get()) }
+    factory { HomeUseCase(get(), get(), get(), get()) }
     factory { HomeDataMapper() }
-    factory <PatientRepository>{ PatientRepositoryImpl(get(),get()) }
+    factory<PatientRepository> { PatientRepositoryImpl(get(), get()) }
     factory { HomeUseCase(get(), get(), get(), get()) }
     factory<PatientRepository> { PatientRepositoryImpl(get(), get()) }
     factory { AppointmentUseCase(get(), get(), get()) }
-    factory<PractitionerRepository> { PractitionerRepositoryImpl(get()) }
+    factory<PractitionerRepository> { PractitionerRepositoryImpl(get(), get()) }
     factory { PractitionerUseCase(get()) }
 }
 

@@ -65,12 +65,15 @@ class HomeViewModel constructor(
                 KMPPractitionerUseCase().practitionerUseCase.getPractitionerDetails(practitionerId = practitionerId)
             Log.d("HomeViewModel", "PractitionerDetails:$practitionerDetails")
 
+            val appointSlots = appointmentUseCase.getAppointmentSlots(practitionerId)
+            Log.d("HomeViewModel", "Slots:$appointSlots")
+
         }
     }
 
     private fun getDoctorsData() {
         viewModelScope.launch {
-            val data =  homeUseCase.getDoctorsData()
+            val data = homeUseCase.getDoctorsData()
             if (data is AppRequest.ListResult<*> && data.result.firstOrNull() is DoctorData) {
                 data.result.let {
                     doctorDataUiState.value = data.result.filterIsInstance<DoctorData>()
@@ -84,7 +87,8 @@ class HomeViewModel constructor(
             val data = homeUseCase.getClinicDetails()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
-                    clinicDataUiState.value = data.result.filterIsInstance<ClinicData>().takeIf { it.size == data.result.size } ?: emptyList()
+                    clinicDataUiState.value = data.result.filterIsInstance<ClinicData>()
+                        .takeIf { it.size == data.result.size } ?: emptyList()
                 }
             }
         }
