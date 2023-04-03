@@ -84,6 +84,12 @@ struct AppointmentScreen: View {
                     case .dateTime:
                         DateTimeView()
                             .environmentObject(viewModel)
+                    case .review:
+                        ReviewView()
+                            .environmentObject(viewModel)
+                    case .scheduled:
+                        ScheduledView()
+                            .environmentObject(viewModel)
                     default:
                         EmptyView(viewModel: EmptyViewModel(title: "Empty"))
                     }
