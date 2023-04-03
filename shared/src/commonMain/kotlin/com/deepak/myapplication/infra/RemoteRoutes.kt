@@ -10,6 +10,7 @@ object RemoteRoutes {
     fun GET_PATIENT_DETAILS(patientId: String): String {
         return BASE_URL + "Patient/$patientId"
     }
+
     const val GET_PATIENT_CARE_TEAM = BASE_URL + "CareTeam"
 
     const val ACCESS_TOKEN = "${YML_DEV_SERVER}token"
@@ -22,5 +23,6 @@ object RemoteRoutes {
 
     object Parameters {
         const val Participant = "participant"
+        const val INCLUDE = "_include=CareTeam:participant"
     }
 }
