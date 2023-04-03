@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import shared
 
 struct HapiHomeScreen: View {
     
@@ -174,16 +175,16 @@ struct DoctorsCells: View {
                         .frame(width: 150, height: 170)
                         .background(Color.customCyan)
                         .cornerRadius(20)
-                        Text(doctor.doctorName)
+                        Text(doctor.doctorName ?? "")
                             .font(.subheadline)
                             .fontWeight(.bold)
                             .lineLimit(1)
-                        Text(doctor.designation)
+                        Text(doctor.designation ?? "")
                             .font(.caption)
                             .foregroundColor(Color.gray)
                     }
                     .onTapGesture(perform: {
-                        viewModel.navigateToEmptyView(screenTitle: "Doctor Details")
+                        viewModel.navigateToEmptyView(screenTitle: "\(doctor.doctorName ?? "Doctor") details" )
                     })
                     .frame(width: 150)
                 }
@@ -206,23 +207,18 @@ struct ClinicCells: View {
                             .frame(width: 250, height: 120)
                         
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(clinic.name)
+                            Text(clinic.clinicName ?? "")
                                 .font(.headline)
                                 .fontWeight(.bold)
-                            Text(clinic.address.addressLine1)
+                            Text(clinic.address ?? "")
                                 .foregroundColor(Color.gray)
-                            Text(clinic.address.city)
-                                .foregroundColor(Color.gray)
-                            +
-                            Text(clinic.address.id)
-                                .foregroundColor(Color.gray)
+                            Spacer()
                         }
-                        .lineLimit(1)
                         .padding(10)
                         
                     }
                     .onTapGesture(perform: {
-                        viewModel.navigateToEmptyView(screenTitle: "Clinic Details")
+                        viewModel.navigateToEmptyView(screenTitle: "\(clinic.clinicName ?? "Clinic") details")
                     })
                     .frame(width: 250)
                     .padding(.bottom, 10)

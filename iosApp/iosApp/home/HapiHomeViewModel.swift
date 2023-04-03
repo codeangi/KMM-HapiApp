@@ -6,16 +6,18 @@
 //  Copyright © 2023 orgName. All rights reserved.
 //
 
-import Foundation
+import shared
 
 class HapiHomeViewModel: ObservableObject {
     
     @Published var path: [String] = []
     @Published var options: [String] = []
-    @Published var doctors: [DoctorModel] = []
-    @Published var clinics: [ClinicModel] = []
+    @Published var doctors: [DoctorData] = []
+    @Published var clinics: [ClinicData] = []
     @Published var medicalRecords: [String] = []
     @Published var emptyScreenTitle: String = ""
+    
+    private var homeUseCase = KMPHomeUseCaseHelper().homeUseCase
     
     init() {
         setOptions()
@@ -29,17 +31,23 @@ class HapiHomeViewModel: ObservableObject {
     }
     
     func setDoctors() {
-        let doctor1 = DoctorModel(doctorName: "Dr.Leslie Crona", designation: "Registered Nurse")
-        let doctor2 = DoctorModel(doctorName: "Dr.Betsey Kemmer", designation: "Doctor of Science")
-
-        doctors = [doctor1, doctor2]
+       
+        homeUseCase.getDoctorsData { appRequest, error in
+            guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<DoctorData> else { return }
+            guard let result = request.result as? [DoctorData] else { return }
+            
+            self.doctors = result
+        }
     }
     
     func setClinics() {
-        let clinic1 = ClinicModel(name: "Franciscan Hospital for Children", address: Address(addressLine1: "30 Warren St", city: "Boston", id: "MA 023635826"))
-        let clinic2 = ClinicModel(name: "Cambridge Hospital", address: Address(addressLine1: "1494 Cambridge", city: "Somerville", id: "MA 2834829237"))
         
-        clinics = [clinic1, clinic2]
+        homeUseCase.getClinicDetails { appRequest, error in
+            guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<ClinicData> else { return }
+            guard let result = request.result as? [ClinicData] else { return }
+            
+            self.clinics = result
+        }
     }
     
     func setMedicalRecords() {
