@@ -1,5 +1,7 @@
 package com.deepak.myapplication.android.di
 
+import com.deepak.myapplication.android.MainActivityViewModel
+import com.deepak.myapplication.android.feature.appointments.AppointmentViewModel
 import com.deepak.myapplication.android.feature.home.HomeViewModel
 import com.deepak.myapplication.android.feature.login.LoginViewModel
 import com.deepak.myapplication.android.feature.registration.UserRegistrationViewModel
@@ -23,5 +25,11 @@ val appModule = module {
     }
     viewModel {
         SplashViewModel(get())
+    }
+    viewModel{
+        AppointmentViewModel(get())
+    }
+    single {
+        MainActivityViewModel()
     }
 }
