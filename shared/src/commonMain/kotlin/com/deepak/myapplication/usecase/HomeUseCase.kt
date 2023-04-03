@@ -3,9 +3,9 @@ package com.deepak.myapplication.usecase
 import com.deepak.myapplication.datamapper.HomeDataMapper
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.local.UserSettingsRepository
+import com.deepak.myapplication.model.AccessTokenData
 import com.deepak.myapplication.model.ClinicData
 import com.deepak.myapplication.model.DoctorData
-import com.deepak.myapplication.model.AccessTokenData
 import com.deepak.myapplication.repository.PatientRepository
 import com.deepak.myapplication.repository.UserRepository
 import org.koin.core.component.KoinComponent

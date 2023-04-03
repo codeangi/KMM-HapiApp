@@ -4,15 +4,16 @@ import com.deepak.myapplication.datamapper.AppointmentDataMapper
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.repository.PatientRepository
-import com.deepak.myapplication.repository.UserRepository
+import com.deepak.myapplication.repository.PractitionerRepository
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.Duration
 
 class AppointmentUseCase(
     private val userSettingsRepository: UserSettingsRepository,
     private val patientRepository: PatientRepository,
-    private val userRepository: UserRepository,
+    private val practitionerRepository: PractitionerRepository,
     private val appointmentDataMapper: AppointmentDataMapper
 ) {
 
@@ -59,6 +60,22 @@ class AppointmentUseCase(
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
         }
+    }
+
+    suspend fun getAppointmentSlots(practitionerId: String): AppRequest {
+        val startDate = Clock.System.now()
+        val endDate = Clock.System.now().plus(Duration.parse("14d"))
+        return getPatientId()?.let { patientId ->
+            practitionerRepository.getAppointment(
+                practitionerId = practitionerId,
+                patientId = patientId,
+                starDate = startDate.toString(),
+                endDate = endDate.toString()
+            )
+        } ?: kotlin.run {
+            AppRequest.Error(Exception("Patient should not be null"))
+        }
+
     }
 
     suspend fun getMyCareTeamData(): AppRequest {

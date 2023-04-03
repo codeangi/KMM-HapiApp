@@ -43,6 +43,7 @@ class PatientRepositoryImpl constructor(
 
                 url {
                     parameters.append(RemoteRoutes.Parameters.Participant, patientId)
+                    parameters.append("_include" ,"CareTeam:participant")
                 }
             }
             val data = response.body<CareTeamResp>()

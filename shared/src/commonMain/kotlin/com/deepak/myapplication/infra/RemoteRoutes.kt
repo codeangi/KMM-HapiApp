@@ -19,7 +19,10 @@ object RemoteRoutes {
         return "${YCARE_BASE_URL}Practitioner/$practitionerId"
     }
 
+    const val SLOT = "${YML_DEV_SERVER}fhir/appointments/\$find"
+
     object Parameters {
         const val Participant = "participant"
+        const val INCLUDE = "_include=CareTeam:participant"
     }
 }
