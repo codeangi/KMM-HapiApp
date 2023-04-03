@@ -53,7 +53,7 @@ val commonModule = module {
     factory { AppointmentDataMapper() }
 
     //Practitioner
-    factory <PractitionerRepository>{ PractitionerRepositoryImpl(get()) }
+    factory <PractitionerRepository>{ PractitionerRepositoryImpl(get(), get()) }
     factory { PractitionerUseCase(get()) }
 
 }
