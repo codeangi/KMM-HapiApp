@@ -10,14 +10,8 @@ import com.deepak.myapplication.local.DataStoreProvider
 import com.deepak.myapplication.local.DatabaseDriverFactory
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.platformModule
-import com.deepak.myapplication.repository.PatientRepository
-import com.deepak.myapplication.repository.PatientRepositoryImpl
-import com.deepak.myapplication.repository.UserRepository
-import com.deepak.myapplication.repository.UserRepositoryImpl
-import com.deepak.myapplication.usecase.AppointmentUseCase
-import com.deepak.myapplication.usecase.HomeUseCase
-import com.deepak.myapplication.usecase.LoginUseCase
-import com.deepak.myapplication.usecase.UserRegistrationUseCase
+import com.deepak.myapplication.repository.*
+import com.deepak.myapplication.usecase.*
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -34,18 +28,34 @@ fun initKoin() = initKoin {
 }
 
 val commonModule = module {
+    //Infra
     single { getNetworkClient() }
     single { provideDataBase(get()) }
     single { provideDataStore(get()) }
+
+    //User specific
     single { UserSettingsRepository(get()) }
     factory<UserRepository> { UserRepositoryImpl(get()) }
+
+    //Auth
     factory { LoginUseCase(get(), get()) }
     factory { UserRegistrationUseCase(get(), get()) }
-    factory { HomeUseCase(get(), get(), get(),get()) }
+
+    //Home
+    factory { HomeUseCase(get(), get(), get(), get()) }
     factory { HomeDataMapper() }
-    factory <PatientRepository>{ PatientRepositoryImpl(get(),get()) }
+
+    //Patient
+    factory <PatientRepository>{ PatientRepositoryImpl(get(), get()) }
+
+    //Appointment
     factory { AppointmentUseCase(get(), get(), get(), get()) }
     factory { AppointmentDataMapper() }
+
+    //Practitioner
+    factory <PractitionerRepository>{ PractitionerRepositoryImpl(get()) }
+    factory { PractitionerUseCase(get()) }
+
 }
 
 internal fun provideDataBase(databaseDriverFactory: DatabaseDriverFactory): DataBase {

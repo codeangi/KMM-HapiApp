@@ -9,6 +9,7 @@ import com.deepak.myapplication.model.DoctorData
 import com.deepak.myapplication.model.PatientDataResp
 import com.deepak.myapplication.usecase.AppointmentUseCase
 import com.deepak.myapplication.usecase.HomeUseCase
+import com.deepak.myapplication.usecase.KMPPractitionerUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -59,6 +60,10 @@ class HomeViewModel constructor(
             Log.d("HomeViewModel", "Access TokenData:$accessTokenData")
             val appointmentData = appointmentUseCase.getPatientPastAppointments()
             Log.d("HomeViewModel", "Appointment Data:$appointmentData")
+            val practitionerId = "1ed22585-3ea1-3c61-b485-f83c940a8880"
+            val practitionerDetails =
+                KMPPractitionerUseCase().practitionerUseCase.getPractitionerDetails(practitionerId = practitionerId)
+            Log.d("HomeViewModel", "PractitionerDetails:$practitionerDetails")
 
         }
     }
