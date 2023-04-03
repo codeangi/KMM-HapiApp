@@ -37,7 +37,7 @@ struct CareDetailsView: View {
             viewModel.appendScreen(screenType: .reason)
         }
         .padding()
-        .frame(height: 40)
+        .frame(width: viewModel.screenWidth - 60, height: 50)
         .font(.headline)
         .fontWeight(.bold)
         .foregroundColor(Color.white)

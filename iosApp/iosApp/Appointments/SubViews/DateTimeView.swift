@@ -19,8 +19,9 @@ struct DateTimeView: View {
                 Text("When would you be like to be seen?")
                     .font(.title)
                     .fontWeight(.bold)
+                DateTimeCard().environmentObject(viewModel)
+                
             }
-            Spacer()
         }
         .navigationTitle("Schedule Appointment")
         .navigationBarTitleDisplayMode(.inline)
@@ -28,6 +29,57 @@ struct DateTimeView: View {
         .navigationBarItems(leading: navBarBackButton(viewModel: viewModel))
         .navigationBarItems(trailing: navBarCancelButton(viewModel: viewModel))
         .padding()
+    }
+}
+
+struct DateTimeCard: View {
+    
+    @EnvironmentObject var viewModel: AppointmentViewModel
+    
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            Divider()
+            ForEach(viewModel.dateTime, id: \.self) { months in
+                Text(months.month)
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .padding(.vertical)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Divider()
+                ForEach(months.dates, id: \.self) { dates in
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(dates.day)
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                            Text(dates.date)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
+                        .frame(width: 50, alignment: .leading)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(dates.time, id: \.self) { time in
+                                    VStack {
+                                        Text(time)
+                                            .foregroundColor(Color.customCyan)
+                                            .fontWeight(.bold)
+                                    }
+                                    .padding()
+                                    .background(Color.lightGrey.opacity(0.6))
+                                    .cornerRadius(10)
+                                    .onTapGesture {
+                                        viewModel.appendScreen(screenType: .review)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.vertical, 10)
+                    Divider()
+                }
+            }
+        }
     }
 }
 

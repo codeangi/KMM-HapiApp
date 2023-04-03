@@ -23,3 +23,14 @@ struct CareTeamModel: Hashable {
     var name: String
     var description: String
 }
+
+struct MonthModel: Hashable {
+    var month: String
+    var dates: [DateModel]
+}
+
+struct DateModel: Hashable {
+    var date: String
+    var day: String
+    var time: [String]
+}
