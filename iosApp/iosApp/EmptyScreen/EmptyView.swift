@@ -14,6 +14,7 @@ struct EmptyView: View {
     
     var body: some View {
         Text("\(viewModel.title) screen will be available soon")
+            .padding()
     }
 }
 
