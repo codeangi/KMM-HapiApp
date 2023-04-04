@@ -29,9 +29,9 @@ class AppointmentDataMapper {
                         val localTimeDate =
                             Instant.parse(entry.resource.start.substring(0, 19) + "Z")
                                 .toLocalDateTime(TimeZone.currentSystemDefault())
-                        val month = localTimeDate.month.name.substring(0, 3)
-                        val dateOfMonth = localTimeDate.dayOfMonth.toString()
-                        val dayOfWeek = localTimeDate.dayOfWeek.name
+                        val month = localTimeDate.month.name.substring(0, 3).lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        val dateOfMonth = localTimeDate.dayOfMonth.toString().lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        val dayOfWeek = localTimeDate.dayOfWeek.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
                         val time =
                             "${localTimeDate.time.hour % 12}:${localTimeDate.time.minute} ${if (localTimeDate.time.hour % 12 == 0) "AM" else "PM"}"
 
@@ -107,7 +107,7 @@ class AppointmentDataMapper {
                                 boardCertification = it.resource.qualification?.firstOrNull()?.code?.text,
                                 groupAffiliations = "0 PLACE",
                                 hospitalAffiliations = "0 HOSPITAL",
-                                medicalSchool = it.resource.extension?.find { it.url?.contains(PRACTITIONER_EDUCATION) == true }?.valueString,
+                                medicalSchool = it.resource.extension?.find { it.url?.contains(PRACTITIONER_EDUCATION) == true }?.valueString?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() },
                                 residency = it.resource.extension?.find { it.url?.contains(PRACTITIONER_RESIDENCY) == true }?.valueString,
                                 locationAddress = getAddress(response.entry.filter { it.resource.resourceType == RESOURCE_ORGANIZATION }, organizationData?.member?.reference)
                             )
@@ -136,7 +136,7 @@ class AppointmentDataMapper {
                 orgAddress = "${it.line?.joinToString { " " }} ${it.city}, ${it.state} ${it.postalCode}"
             }
         }
-        return orgAddress
+        return orgAddress.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
 
     fun getAppointmentsTimeSlot(timeSlotResponse: AppRequest): AppRequest {
