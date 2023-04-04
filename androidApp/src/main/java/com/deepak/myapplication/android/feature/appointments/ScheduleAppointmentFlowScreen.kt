@@ -29,11 +29,6 @@ fun ScheduleAppointmentFlowScreen(onBack: () -> Unit, onAppointmentScheduleClick
 
     val mainActivityViewModel: MainActivityViewModel = koinViewModel()
 
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-
-    LaunchedEffect(key1 = lifecycle, block = {
-        appointmentViewModel.getAppointmentTimeSlots()
-    })
 
     Scaffold(
         topBar = {
@@ -71,14 +66,17 @@ fun ScheduleAppointmentFlowScreen(onBack: () -> Unit, onAppointmentScheduleClick
                     }
                 }
                 2 -> {
-                    SelectLocationScreen() {
+                    SelectLocationScreen(
+                        mainActivityViewModel.selectedCareTeamDoctor
+                    ) {
                         mainActivityViewModel.selectedAppointmentData.appointmentLocationAddress = it.address
                         currentStep.value++
                     }
                 }
                 3 -> {
                     SelectTimeSlotScreen(
-                        appointmentViewModel.timeSlotDataState
+                        appointmentViewModel,
+                        mainActivityViewModel
                     ) { timeSlotData, selectedTime ->
                         mainActivityViewModel.selectedAppointmentData.timeSlotData = getSelectedTimeData(timeSlotData, selectedTime)
                         currentStep.value++
@@ -95,8 +93,8 @@ fun ScheduleAppointmentFlowScreen(onBack: () -> Unit, onAppointmentScheduleClick
 }
 
 fun getSelectedTimeData(timeSlotData: TimeSlotData, selectedTime: String): String? {
-    val date = timeSlotData.dayAndTimeMap?.keys?.firstOrNull()
-    val day = "Tuesday"
+    val date = "${timeSlotData.dayAndTimeMap?.first?.date}"
+    val day = "${timeSlotData.dayAndTimeMap?.first?.weekDay}"
     return "$day, ${timeSlotData.month} $date, $selectedTime"
 
 }

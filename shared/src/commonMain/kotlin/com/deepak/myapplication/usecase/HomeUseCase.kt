@@ -4,8 +4,6 @@ import com.deepak.myapplication.datamapper.HomeDataMapper
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.model.AccessTokenData
-import com.deepak.myapplication.model.ClinicData
-import com.deepak.myapplication.model.DoctorData
 import com.deepak.myapplication.repository.PatientRepository
 import com.deepak.myapplication.repository.UserRepository
 import org.koin.core.component.KoinComponent
@@ -48,7 +46,11 @@ class HomeUseCase constructor(
     }
 
     suspend fun getDoctorsData(): AppRequest {
-        return dataMapper.getDoctorsDataFromResponse()
+        return getPatientId()?.let { patientId ->
+            dataMapper.getDoctorsDataFromResponse(patientRepository.getPatientCareTeam(patientId))
+        } ?: kotlin.run {
+            AppRequest.Error(Exception("Patient should not be null"))
+        }
     }
 }
 

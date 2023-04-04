@@ -7,12 +7,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil.compose.rememberImagePainter
 import com.deepak.myapplication.android.MainActivityViewModel
 import com.deepak.myapplication.android.R
 import com.deepak.myapplication.android.theme.customCyan
@@ -56,14 +58,32 @@ fun CareTeamDoctorDetailsScreen(
                         .padding(start = viewPort)
                         .background(customCyan, RoundedCornerShape(100))
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.outline_person_icon),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .align(Alignment.Center),
-                        tint = Color.White
-                    )
+                    if(selectedCareDoctor?.image.isNullOrEmpty()) {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_person_icon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .align(Alignment.Center),
+                            tint = Color.White
+                        )
+                    } else {
+                        Image(
+                            painter = rememberImagePainter(
+                                data = selectedCareDoctor?.image,
+                                builder = {
+                                    crossfade(true)
+                                    placeholder(R.drawable.baseline_person_24)
+                                    error(R.drawable.baseline_person_24)
+                                },
+                            ),
+                            contentScale = ContentScale.FillBounds,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(84.dp, 64.dp)
+                                .clip(shape = RoundedCornerShape(64.dp)),
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
 
