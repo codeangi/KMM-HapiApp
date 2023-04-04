@@ -3,6 +3,10 @@ package com.deepak.myapplication.model
 @kotlinx.serialization.Serializable
 data class Resource(
     val resourceType: String,
+    val comment:String?,
+    val serviceType: ServiceType?,
+    val schedule: Schedule?,
+    val contained: List<Resource>?,
     val id: String,
     val status: String?,
     val start: String?,
@@ -49,6 +53,11 @@ data class Slot(val reference: String)
 
 @kotlinx.serialization.Serializable
 data class Actor(val reference: String?, val display: String?)
+@kotlinx.serialization.Serializable
+data class ServiceType(val coding: Coding)
+
+@kotlinx.serialization.Serializable
+data class Schedule(val reference: String?)
 
 fun List<Resource>.getSubList(type: String): List<Resource> {
     return this.filter { it.resourceType == type }

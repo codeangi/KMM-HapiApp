@@ -4,8 +4,7 @@ import com.deepak.myapplication.datamapper.HomeDataMapper
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.model.AccessTokenData
-import com.deepak.myapplication.model.ClinicData
-import com.deepak.myapplication.model.DoctorData
+import com.deepak.myapplication.model.Resource
 import com.deepak.myapplication.repository.PatientRepository
 import com.deepak.myapplication.repository.UserRepository
 import org.koin.core.component.KoinComponent
@@ -49,6 +48,10 @@ class HomeUseCase constructor(
 
     suspend fun getDoctorsData(): AppRequest {
         return dataMapper.getDoctorsDataFromResponse()
+    }
+
+    suspend fun bookAppointment(resource: Resource): AppRequest {
+        return userRepository.bookAppointment(resource)
     }
 }
 

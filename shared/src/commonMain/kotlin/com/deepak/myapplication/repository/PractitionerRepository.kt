@@ -59,13 +59,13 @@ class PractitionerRepositoryImpl(
             add(practitioner)
         }
         return try {
-            val appointmentReq = AppointmentReq(resourceType = "Parameters", parameter = parameter)
+            val appointmentSlotReq = AppointmentSlotReq(resourceType = "Parameters", parameter = parameter)
             val resp = httpClient.post(RemoteRoutes.SLOT) {
                 val token = userSettingsRepository.getAccessToken() ?: ""
                 println("User token:$token")
                 bearerAuth(token)
                 contentType(ContentType.Application.Json)
-                setBody(appointmentReq)
+                setBody(appointmentSlotReq)
             }
             val data = resp.body<AppointmentResp>()
             AppRequest.Result(data)
