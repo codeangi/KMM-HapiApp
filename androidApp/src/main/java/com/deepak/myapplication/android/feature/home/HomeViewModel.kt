@@ -34,7 +34,7 @@ class HomeViewModel constructor(
     init {
         getClinicData()
         getDoctorsData()
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             homeUiState.value = homeUiState.value.copy(
                 userId = homeUseCase.getUserId() ?: "",
                 patientId = homeUseCase.getPatientId() ?: ""
@@ -72,7 +72,7 @@ class HomeViewModel constructor(
     }
 
     private fun getDoctorsData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = homeUseCase.getDoctorsData()
             if (data is AppRequest.ListResult<*> && data.result.firstOrNull() is DoctorData) {
                 data.result.let {
@@ -83,7 +83,7 @@ class HomeViewModel constructor(
     }
 
     private fun getClinicData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO){
             val data = homeUseCase.getClinicDetails()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {

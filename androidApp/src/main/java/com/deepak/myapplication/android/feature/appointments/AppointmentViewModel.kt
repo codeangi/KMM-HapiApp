@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.model.*
 import com.deepak.myapplication.usecase.AppointmentUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AppointmentViewModel constructor(private val appointmentUseCase: AppointmentUseCase) : ViewModel() {
@@ -27,7 +28,7 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
     }
 
     private fun getFutureAppointments() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = appointmentUseCase.getPatientFutureAppointments()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
@@ -39,7 +40,7 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
     }
 
     private fun getTodaysAppointments() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = appointmentUseCase.getPatientTodaysAppointments()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
@@ -51,7 +52,7 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
     }
 
     private fun getPastAppointments() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = appointmentUseCase.getPatientPastAppointments()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
@@ -63,7 +64,7 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
     }
 
     fun getMyCareTeamData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = appointmentUseCase.getMyCareTeamData()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
@@ -82,7 +83,7 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
     }
 
     fun getAppointmentTimeSlots(practitionerId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = appointmentUseCase.getAppointmentSlots(practitionerId)
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
