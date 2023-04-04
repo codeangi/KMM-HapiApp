@@ -33,6 +33,7 @@ struct TypeView: View {
                                 .foregroundColor(Color.black.opacity(0.6))
                         }
                         .onTapGesture {
+                            viewModel.selectedAppointmentData.appointmentType = type.typeName
                             viewModel.path.append(AppointmentScreens.location)
                         }
                     }

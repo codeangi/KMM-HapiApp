@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
+import com.deepak.myapplication.model.AppointmentResp
 import com.deepak.myapplication.model.ClinicData
 import com.deepak.myapplication.model.DoctorData
 import com.deepak.myapplication.model.PatientDataResp
@@ -67,7 +68,13 @@ class HomeViewModel constructor(
 
             val appointSlots = appointmentUseCase.getAppointmentSlots(practitionerId)
             Log.d("HomeViewModel", "Slots:$appointSlots")
-
+            if( appointSlots is AppRequest.Result<*> && appointSlots.result is AppointmentResp){
+                val entry = (appointSlots.result as AppointmentResp).entry?.last()
+                entry?.resource?.let {
+                   val resp =  homeUseCase.bookAppointment(it)
+                    Log.d("HomeViewModel","Booking appointment resp:$resp")
+                }
+            }
         }
     }
 

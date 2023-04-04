@@ -35,7 +35,7 @@ val commonModule = module {
 
     //User specific
     single { UserSettingsRepository(get()) }
-    factory<UserRepository> { UserRepositoryImpl(get()) }
+    factory<UserRepository> { UserRepositoryImpl(get(), get()) }
 
     //Auth
     factory { LoginUseCase(get(), get()) }
@@ -46,14 +46,14 @@ val commonModule = module {
     factory { HomeDataMapper() }
 
     //Patient
-    factory <PatientRepository>{ PatientRepositoryImpl(get(), get()) }
+    factory<PatientRepository> { PatientRepositoryImpl(get(), get()) }
 
     //Appointment
     factory { AppointmentUseCase(get(), get(), get(), get()) }
     factory { AppointmentDataMapper() }
 
     //Practitioner
-    factory <PractitionerRepository>{ PractitionerRepositoryImpl(get(), get()) }
+    factory<PractitionerRepository> { PractitionerRepositoryImpl(get(), get()) }
     factory { PractitionerUseCase(get()) }
 
 }

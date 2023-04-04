@@ -41,7 +41,6 @@
 		FCAEB42729D5FEDA00E6F47F /* LocationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAEB42629D5FEDA00E6F47F /* LocationsView.swift */; };
 		FCAEB42929D603D100E6F47F /* DateTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAEB42829D603D100E6F47F /* DateTimeView.swift */; };
 		FCE8423A29D4401F0046A6E5 /* AppointmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */; };
-		FCE8423C29D4405D0046A6E5 /* AppointmentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE8423B29D4405D0046A6E5 /* AppointmentModel.swift */; };
 		FCEFF65D29D5A69200B28794 /* CareDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCEFF65C29D5A69200B28794 /* CareDetailsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -84,7 +83,6 @@
 		FCAEB42629D5FEDA00E6F47F /* LocationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsView.swift; sourceTree = "<group>"; };
 		FCAEB42829D603D100E6F47F /* DateTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeView.swift; sourceTree = "<group>"; };
 		FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentViewModel.swift; sourceTree = "<group>"; };
-		FCE8423B29D4405D0046A6E5 /* AppointmentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentModel.swift; sourceTree = "<group>"; };
 		FCEFF65C29D5A69200B28794 /* CareDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareDetailsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -250,7 +248,6 @@
 				FC5A113E29D573670025A371 /* SubViews */,
 				FCA27A3829D1D6B600A4D13B /* AppointmentScreen.swift */,
 				FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */,
-				FCE8423B29D4405D0046A6E5 /* AppointmentModel.swift */,
 				FC5A114129D593100025A371 /* CommonViews.swift */,
 				FC272E2829D5C86400A967C1 /* CommonModels.swift */,
 			);
@@ -417,7 +414,6 @@
 				FC6A9A1929D32CFC00A2ACB7 /* EmptyView.swift in Sources */,
 				FCEFF65D29D5A69200B28794 /* CareDetailsView.swift in Sources */,
 				7555FF83242A565900829871 /* SceneView.swift in Sources */,
-				FCE8423C29D4405D0046A6E5 /* AppointmentModel.swift in Sources */,
 				FCA665F029D2FB3F00C11B2C /* ClinicModel.swift in Sources */,
 				FC5A114229D593100025A371 /* CommonViews.swift in Sources */,
 				FCA27A4429D2BF5B00A4D13B /* Extensions.swift in Sources */,

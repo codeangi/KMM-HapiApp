@@ -4,6 +4,7 @@ import com.deepak.myapplication.datamapper.HomeDataMapper
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.model.AccessTokenData
+import com.deepak.myapplication.model.Resource
 import com.deepak.myapplication.repository.PatientRepository
 import com.deepak.myapplication.repository.UserRepository
 import org.koin.core.component.KoinComponent
@@ -51,6 +52,10 @@ class HomeUseCase constructor(
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
         }
+    }
+
+    suspend fun bookAppointment(resource: Resource): AppRequest {
+        return userRepository.bookAppointment(resource)
     }
 }
 

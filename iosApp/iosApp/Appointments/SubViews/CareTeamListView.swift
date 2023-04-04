@@ -34,10 +34,13 @@ struct CareTeamListView: View {
                                 .padding(.trailing, 20)
                                 .foregroundColor(Color.customCyan)
                             VStack(alignment: .leading, spacing: 5) {
-                                Text(careTeam.name)
+                                Text(careTeam.doctorName ?? "")
                                     .font(.title3)
                                     .fontWeight(.semibold)
-                                Text(careTeam.description)
+                                Text(careTeam.designation ?? "")
+                                    .font(.subheadline)
+                                    .foregroundColor(.black.opacity(0.5))
+                                Text(careTeam.hospitalLocation ?? "")
                                     .font(.subheadline)
                                     .foregroundColor(.black.opacity(0.5))
                             }
@@ -48,7 +51,8 @@ struct CareTeamListView: View {
                         
                         .padding(.vertical, 10)
                         .onTapGesture {
-                            viewModel.appendScreen(screenType: .careDetail)
+                            viewModel.selectedCareTeamIndex = viewModel.careTeam.firstIndex(of: careTeam) ?? 0
+                            viewModel.appendScreen(screenType: .careDetail(careData: careTeam))
                         }
                     }
                 }

@@ -17,7 +17,7 @@ struct ScheduledView: View {
             LottieView(lottieFile: "successful_animation")
             Spacer()
             Button("VIEW DETAILS") {
-                
+                viewModel.appendScreen(screenType: .review(isProgressNeeded: false))
             }
             .padding()
             .frame(width: viewModel.screenWidth - 60, height: 50)

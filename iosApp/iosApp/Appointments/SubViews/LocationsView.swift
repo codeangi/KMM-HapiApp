@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import shared
 
 struct LocationsView: View {
     
@@ -20,9 +21,7 @@ struct LocationsView: View {
                     .font(.title)
                     .fontWeight(.bold)
                 ScrollView {
-                    ForEach(viewModel.locations, id: \.self) { location in
-                        LocationCard(location: location).environmentObject(viewModel)
-                    }
+                    LocationCard(careDetails: viewModel.careTeam[viewModel.selectedCareTeamIndex]).environmentObject(viewModel)
                 }
                 Spacer()
             }
@@ -38,7 +37,8 @@ struct LocationsView: View {
 
 struct LocationCard: View {
     
-    var location: LocationsModel
+    var careDetails: CareTeamData
+    
     @EnvironmentObject var viewModel: AppointmentViewModel
     
     var body: some View {
@@ -49,16 +49,16 @@ struct LocationCard: View {
                     .frame(width: 60, height: 60)
                     .cornerRadius(10)
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(location.place)
+                    Text(careDetails.hospitalLocation ?? "")
                     HStack(alignment: .top) {
                         Image(systemName: "mappin.and.ellipse")
-                        Text(location.address)
+                        Text(careDetails.locationAddress ?? "")
                             .font(.subheadline)
                         .foregroundColor(.black.opacity(0.6))
                     }
                     HStack(alignment: .top) {
                         Image(systemName: "clock")
-                        Text(location.availableOn)
+                        Text("Attending hours:\n8 AM - 2 PM - Mon, Tue, Wed, Thu, Fri")
                             .font(.subheadline)
                         .foregroundColor(.black.opacity(0.6))
                     }
@@ -75,6 +75,7 @@ struct LocationCard: View {
                 .stroke(Color.lightGrey.opacity(0.9), lineWidth: 1)
         )
         .onTapGesture {
+            viewModel.selectedAppointmentData.appointmentLocationAddress = (careDetails.hospitalLocation ?? "") + (careDetails.locationAddress ?? "")
             viewModel.appendScreen(screenType: .dateTime)
         }
     }
