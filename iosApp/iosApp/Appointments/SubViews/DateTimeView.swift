@@ -40,19 +40,19 @@ struct DateTimeCard: View {
         ScrollView(showsIndicators: false) {
             Divider()
             ForEach(viewModel.dateTime, id: \.self) { months in
-                Text(months.month)
+                Text("\(months.month) \(months.year)")
                     .font(.title)
                     .fontWeight(.semibold)
                     .padding(.vertical)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Divider()
-                ForEach(months.dates, id: \.self) { dates in
+                ForEach(months.dayAndTimeMap, id: \.self) { dates in
                     HStack(alignment: .top) {
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(dates.day)
+                            Text(dates.weekDay.prefix(3).uppercased())
                                 .font(.headline)
                                 .fontWeight(.semibold)
-                            Text(dates.date)
+                            Text(dates.weekDate)
                                 .font(.title2)
                                 .fontWeight(.bold)
                         }
@@ -69,7 +69,9 @@ struct DateTimeCard: View {
                                     .background(Color.lightGrey.opacity(0.6))
                                     .cornerRadius(10)
                                     .onTapGesture {
-                                        viewModel.appendScreen(screenType: .review)
+                                        let slotData = "\(dates.weekDay), \(months.month) \(dates.weekDate) at \(time)"
+                                        viewModel.selectedAppointmentData.timeSlotData = slotData
+                                        viewModel.appendScreen(screenType: .review(isProgressNeeded: true))
                                     }
                                 }
                             }

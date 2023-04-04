@@ -7,8 +7,11 @@
 //
 
 import SwiftUI
+import shared
 
 struct CareDetailsView: View {
+    
+    var careDetails: CareTeamData
     
     @EnvironmentObject var viewModel: AppointmentViewModel
     
@@ -17,14 +20,14 @@ struct CareDetailsView: View {
             ZStack(alignment: .topLeading) {
                 ScrollView {
                     TopView()
-                    DetailsView()
+                    DetailsView(careDetails: careDetails)
                     Divider()
                         .padding(.horizontal)
-                    AboutView()
-                    keyValueDetailView()
+                    AboutView(about: careDetails.doctorDescription ?? "")
+                    keyValueDetailView(careDetails: careDetails)
                         .environmentObject(viewModel)
                     Divider()
-                    LocationView()
+                    LocationView(careDetails: careDetails)
                         .padding(.bottom, 20)
                 }
                 .ignoresSafeArea()
@@ -34,6 +37,7 @@ struct CareDetailsView: View {
             .navigationBarHidden(true)
         }
         Button("SCHEDULE APPOINTMENT") {
+            viewModel.selectedAppointmentData.doctorName = careDetails.doctorName
             viewModel.appendScreen(screenType: .reason)
         }
         .padding()
@@ -89,9 +93,12 @@ struct TopView: View {
 }
 
 struct DetailsView: View {
+    
+    var careDetails: CareTeamData
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Dr.Leslie Crona, RN")
+            Text(careDetails.doctorName ?? "")
                 .font(.title)
                 .fontWeight(.bold)
             Text("Accepting")
@@ -100,7 +107,7 @@ struct DetailsView: View {
             Text("Specialities")
                 .font(.title3)
                 .fontWeight(.semibold)
-            Text("Neuropathology")
+            Text(careDetails.designation ?? "")
                 .font(.title3)
         }
         .padding(20)
@@ -111,6 +118,7 @@ struct DetailsView: View {
 
 struct AboutView: View {
     
+    var about: String
     @State var aboutExpanded: Bool = true
     
     var body: some View {
@@ -126,7 +134,7 @@ struct AboutView: View {
                     }
             }
             if aboutExpanded {
-                Text("This is a test data. The actual about of the doctor will be available soon. This is a test data. The actual about of the doctor will be available soon. This is a test data. The actual about of the doctor will be available soon")
+                Text(about)
                     .font(.headline)
                     .fontWeight(.regular)
             }
@@ -161,25 +169,26 @@ struct keyValueView: View {
 
 struct keyValueDetailView: View {
     
+    var careDetails: CareTeamData
     @EnvironmentObject var viewModel: AppointmentViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
             HStack(alignment: .top) {
-                keyValueView(title: "Gender", value: "Female")
-                keyValueView(title: "Languages", value: "Spanish")
+                keyValueView(title: "Gender", value: careDetails.gender ?? "")
+                keyValueView(title: "Languages", value: careDetails.languages ?? "")
             }
             HStack(alignment: .top) {
-                keyValueView(title: "Years in Practice", value: "3")
-                keyValueView(title: "Board Certification", value: "Registered Nurse")
+                keyValueView(title: "Years in Practice", value: careDetails.yearsOfPractice ?? "")
+                keyValueView(title: "Board Certification", value: careDetails.boardCertification ?? "")
             }
             HStack(alignment: .top) {
-                keyValueView(title: "Group Affiliations", value: "0 PLACE", isColoredValue: true)
-                keyValueView(title: "Hospital Affiliations", value: "0 HOSPITAL", isColoredValue: true)
+                keyValueView(title: "Group Affiliations", value: careDetails.groupAffiliations ?? "", isColoredValue: true)
+                keyValueView(title: "Hospital Affiliations", value: careDetails.hospitalAffiliations ?? "", isColoredValue: true)
             }
             HStack(alignment: .top) {
-                keyValueView(title: "Medical school", value: "Boston University")
-                keyValueView(title: "Residency", value: "CHA Cambridge Hospital")
+                keyValueView(title: "Medical school", value: careDetails.medicalSchool ?? "")
+                keyValueView(title: "Residency", value: careDetails.residency ?? "")
             }
         }
         .padding(.horizontal, 20)
@@ -189,6 +198,9 @@ struct keyValueDetailView: View {
 }
 
 struct LocationView: View {
+    
+    var careDetails: CareTeamData
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Locations")
@@ -200,8 +212,8 @@ struct LocationView: View {
                     .frame(width: 60, height: 60)
                     .cornerRadius(10)
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Measured Wellness Llc")
-                    Text("47 Seaverns Ave#5\nBrookline, MA 03838723")
+                    Text(careDetails.hospitalLocation ?? "")
+                    Text(careDetails.locationAddress ?? "")
                         .font(.subheadline)
                         .foregroundColor(.black.opacity(0.6))
                 }
@@ -216,7 +228,7 @@ struct LocationView: View {
 struct CareDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            CareDetailsView().environmentObject(AppointmentViewModel())
+            CareDetailsView(careDetails: AppointmentViewModel().careTeam[0]).environmentObject(AppointmentViewModel())
         }
         
     }

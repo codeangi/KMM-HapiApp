@@ -13,24 +13,14 @@ struct TypeModel: Hashable {
     var typeName: String
 }
 
-struct LocationsModel: Hashable {
-    var place: String
-    var address: String
-    var availableOn: String
-}
-
-struct CareTeamModel: Hashable {
-    var name: String
-    var description: String
-}
-
 struct MonthModel: Hashable {
     var month: String
-    var dates: [DateModel]
+    var year: String
+    var dayAndTimeMap: [DateModel]
 }
 
 struct DateModel: Hashable {
-    var date: String
-    var day: String
+    var weekDay: String
+    var weekDate: String
     var time: [String]
 }

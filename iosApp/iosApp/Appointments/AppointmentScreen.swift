@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import shared
 
 struct AppointmentScreen: View {
     
@@ -16,32 +17,49 @@ struct AppointmentScreen: View {
         NavigationStack(path: $viewModel.path) {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("Today")
-                        .font(.title)
-                        .fontWeight(.bold)
+                    if !viewModel.current.isEmpty {
+                        Text("Today")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
                     ForEach(viewModel.current, id: \.self) { appointment in
                         VStack(alignment: .leading) {
                             AppointmentCell(appointment: appointment, isCurrent: true)
+                                .onTapGesture {
+                                    viewModel.didTapAppointment(appointment: appointment)
+                                }
                         }
                         .padding(.bottom, 20)
                     }
                     
-                    Text("Upcoming")
-                        .font(.title)
-                        .fontWeight(.bold)
+                    if !viewModel.upcoming.isEmpty {
+                        Text("Upcoming")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
+                    
                     ForEach(viewModel.upcoming, id: \.self) { appointment in
                         VStack(alignment: .leading) {
                             AppointmentCell(appointment: appointment, isCurrent: false)
+                                .onTapGesture {
+                                    viewModel.didTapAppointment(appointment: appointment)
+                                }
                         }
                         .padding(.bottom, 20)
                     }
                     
-                    Text("Past")
-                        .font(.title)
-                        .fontWeight(.bold)
+                    if !viewModel.past.isEmpty {
+                        Text("Past")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
+                    
                     ForEach(viewModel.past, id: \.self) { appointment in
                         VStack(alignment: .leading) {
                             AppointmentCell(appointment: appointment, isCurrent: false)
+                                .onTapGesture {
+                                    viewModel.didTapAppointment(appointment: appointment)
+                                }
                         }
                         .padding(.bottom, 20)
                     }
@@ -49,7 +67,11 @@ struct AppointmentScreen: View {
                 .padding(20)
                 .navigationTitle("Appointments")
                 .toolbar {
-                    Button(action: { viewModel.appendScreen(screenType: .careTeam) }, label: {
+                    Button(action: {
+                        viewModel.clearSelectedData()
+                        viewModel.appendScreen(screenType: .careTeam)
+                        
+                    }, label: {
                         Image(systemName: "plus")
                             .resizable()
                             .frame(width: 15, height: 15)
@@ -69,8 +91,8 @@ struct AppointmentScreen: View {
                     case .careTeam:
                         CareTeamListView()
                             .environmentObject(viewModel)
-                    case .careDetail:
-                        CareDetailsView()
+                    case .careDetail(let careDetails):
+                        CareDetailsView(careDetails: careDetails)
                             .environmentObject(viewModel)
                     case .reason:
                         ReasonView()
@@ -84,8 +106,8 @@ struct AppointmentScreen: View {
                     case .dateTime:
                         DateTimeView()
                             .environmentObject(viewModel)
-                    case .review:
-                        ReviewView()
+                    case .review(let isProgressNeeded):
+                        ReviewView(isProgressNeeded: isProgressNeeded)
                             .environmentObject(viewModel)
                     case .scheduled:
                         ScheduledView()
@@ -101,7 +123,7 @@ struct AppointmentScreen: View {
 
 struct AppointmentCell: View {
     
-    @State var appointment: AppointmentModel
+    @State var appointment: AppointmentScheduleData
     @State var isCurrent: Bool
     
     var body: some View {
@@ -113,7 +135,7 @@ struct AppointmentCell: View {
             }
             VStack(alignment: .leading, spacing: 15) {
                 HStack {
-                    Text(appointment.type)
+                    Text(appointment.symptoms ?? "")
                         .font(.title3)
                         .fontWeight(.bold)
                     Spacer()
@@ -124,19 +146,19 @@ struct AppointmentCell: View {
                 HStack(spacing: 10) {
                     Image(systemName: "wallet.pass")
                         .foregroundColor(Color.customCyan)
-                    Text(appointment.date)
+                    Text(appointment.appointmentDate ?? "")
                         .foregroundColor(.black.opacity(0.6))
                 }
                 HStack(spacing: 10) {
                     Image(systemName: "person")
                         .foregroundColor(Color.customCyan)
-                    Text(appointment.doctor)
+                    Text(appointment.doctorName ?? "")
                         .foregroundColor(.black.opacity(0.6))
                 }
                 HStack(spacing: 10) {
                     Image(systemName: "mappin.and.ellipse")
                         .foregroundColor(Color.customCyan)
-                    Text(appointment.careName)
+                    Text(appointment.location ?? "")
                         .foregroundColor(.black.opacity(0.6))
                 }
             }
