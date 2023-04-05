@@ -6,21 +6,15 @@
 //  Copyright © 2023 orgName. All rights reserved.
 //
 
-import Foundation
+import shared
 
 struct TypeModel: Hashable {
     var typeIcon: String
     var typeName: String
 }
 
-struct MonthModel: Hashable {
+struct SlotModel: Hashable {
     var month: String
     var year: String
-    var dayAndTimeMap: [DateModel]
-}
-
-struct DateModel: Hashable {
-    var weekDay: String
-    var weekDate: String
-    var time: [String]
+    var slotData: [TimeSlotData]
 }

@@ -37,6 +37,7 @@ struct CareDetailsView: View {
             .navigationBarHidden(true)
         }
         Button("SCHEDULE APPOINTMENT") {
+            viewModel.setReasons()
             viewModel.selectedAppointmentData.doctorName = careDetails.doctorName
             viewModel.appendScreen(screenType: .reason)
         }

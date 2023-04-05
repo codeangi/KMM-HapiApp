@@ -68,7 +68,7 @@ struct AppointmentScreen: View {
                 .navigationTitle("Appointments")
                 .toolbar {
                     Button(action: {
-                        viewModel.clearSelectedData()
+                        viewModel.setCareTeam()
                         viewModel.appendScreen(screenType: .careTeam)
                         
                     }, label: {
@@ -128,11 +128,9 @@ struct AppointmentCell: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            if isCurrent {
-                Image("clinic")
-                    .resizable()
-                    .frame(height: 200)
-            }
+            Image("clinic")
+                .resizable()
+                .frame(height: 200)
             VStack(alignment: .leading, spacing: 15) {
                 HStack {
                     Text(appointment.symptoms ?? "")

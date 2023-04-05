@@ -40,7 +40,6 @@ class RegistrationViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.registrationUseCase.registerUser(user: user, completionHandler: {kotlinBoolean, error in
                 if error == nil {
-                    print(user)
                     if let kotlinBoolean = kotlinBoolean, kotlinBoolean as! Bool {
                         self.isLoading = false
                         self.registrationStatus = true

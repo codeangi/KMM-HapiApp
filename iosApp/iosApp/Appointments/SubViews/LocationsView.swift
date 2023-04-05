@@ -21,7 +21,7 @@ struct LocationsView: View {
                     .font(.title)
                     .fontWeight(.bold)
                 ScrollView {
-                    LocationCard(careDetails: viewModel.careTeam[viewModel.selectedCareTeamIndex]).environmentObject(viewModel)
+                    LocationCard(careDetails: viewModel.getCareTeamData()).environmentObject(viewModel)
                 }
                 Spacer()
             }
@@ -75,6 +75,7 @@ struct LocationCard: View {
                 .stroke(Color.lightGrey.opacity(0.9), lineWidth: 1)
         )
         .onTapGesture {
+            viewModel.setDateTime()
             viewModel.selectedAppointmentData.appointmentLocationAddress = (careDetails.hospitalLocation ?? "") + (careDetails.locationAddress ?? "")
             viewModel.appendScreen(screenType: .dateTime)
         }

@@ -42,6 +42,7 @@
 		FCAEB42929D603D100E6F47F /* DateTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAEB42829D603D100E6F47F /* DateTimeView.swift */; };
 		FCE8423A29D4401F0046A6E5 /* AppointmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */; };
 		FCEFF65D29D5A69200B28794 /* CareDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCEFF65C29D5A69200B28794 /* CareDetailsView.swift */; };
+		FCFB2DAC29DD979D002FDFA1 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB2DAB29DD979D002FDFA1 /* ProfileViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,7 @@
 		FCAEB42829D603D100E6F47F /* DateTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeView.swift; sourceTree = "<group>"; };
 		FCE8423929D4401F0046A6E5 /* AppointmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentViewModel.swift; sourceTree = "<group>"; };
 		FCEFF65C29D5A69200B28794 /* CareDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareDetailsView.swift; sourceTree = "<group>"; };
+		FCFB2DAB29DD979D002FDFA1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -266,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				FCA27A3E29D1D7CA00A4D13B /* ProfileScreen.swift */,
+				FCFB2DAB29DD979D002FDFA1 /* ProfileViewModel.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -410,6 +413,7 @@
 				D2DC4A7229C98F0C00D1AD69 /* HapiHomeScreen.swift in Sources */,
 				FCA27A3C29D1D79C00A4D13B /* MedicationScreen.swift in Sources */,
 				FCA665EE29D2ECB100C11B2C /* DoctorModel.swift in Sources */,
+				FCFB2DAC29DD979D002FDFA1 /* ProfileViewModel.swift in Sources */,
 				D2DC4A6629C3389E00D1AD69 /* UserRegistrationScreen.swift in Sources */,
 				FC6A9A1929D32CFC00A2ACB7 /* EmptyView.swift in Sources */,
 				FCEFF65D29D5A69200B28794 /* CareDetailsView.swift in Sources */,

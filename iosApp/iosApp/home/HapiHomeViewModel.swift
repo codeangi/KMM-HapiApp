@@ -20,10 +20,18 @@ class HapiHomeViewModel: ObservableObject {
     private var homeUseCase = KMPHomeUseCaseHelper().homeUseCase
     
     init() {
+        accessToken()
         setOptions()
         setDoctors()
         setClinics()
         setMedicalRecords()
+    }
+    
+    func accessToken() {
+        homeUseCase.getAccessToken { appRequest, error in
+            guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<DoctorData> else { return }
+            guard let result = request.result as? [DoctorData] else { return }
+        }
     }
     
     func setOptions() {
