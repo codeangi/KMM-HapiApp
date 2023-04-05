@@ -45,7 +45,6 @@ class HomeViewModel constructor(
 
     fun getPatientDetails() {
         viewModelScope.launch(Dispatchers.IO) {
-
             val data = homeUseCase.getPatientDetails()
             Log.d("HomeViewModel", "patient details:$data")
             if (data is AppRequest.Result<*> && data.result is PatientDataResp) {
@@ -68,13 +67,22 @@ class HomeViewModel constructor(
 
             val appointSlots = appointmentUseCase.getAppointmentSlots(practitionerId)
             Log.d("HomeViewModel", "Slots:$appointSlots")
-            if( appointSlots is AppRequest.Result<*> && appointSlots.result is AppointmentResp){
+            if (appointSlots is AppRequest.Result<*> && appointSlots.result is AppointmentResp) {
                 val entry = (appointSlots.result as AppointmentResp).entry?.last()
                 entry?.resource?.let {
-                   val resp =  homeUseCase.bookAppointment(it)
-                    Log.d("HomeViewModel","Booking appointment resp:$resp")
+                    val resp = homeUseCase.bookAppointment(it)
+                    Log.d("HomeViewModel", "Booking appointment resp:$resp")
                 }
             }
+            val latitude = "42.2386109797091"
+            val longitude = "-71.14634830604263"
+            val radius = 10
+            val locationDetails = homeUseCase.getPatientNearByHospitals(
+                latitude = latitude,
+                longitude = longitude,
+                radius = radius
+            )
+            Log.d("HomeViewModel", "Patient nearby hospitals:$locationDetails")
         }
     }
 
@@ -90,7 +98,7 @@ class HomeViewModel constructor(
     }
 
     private fun getClinicData() {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             val data = homeUseCase.getClinicDetails()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
