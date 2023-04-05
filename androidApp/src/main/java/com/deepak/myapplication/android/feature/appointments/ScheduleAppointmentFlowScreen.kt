@@ -77,15 +77,16 @@ fun ScheduleAppointmentFlowScreen(onBack: () -> Unit, onAppointmentScheduleClick
                     SelectTimeSlotScreen(
                         appointmentViewModel,
                         mainActivityViewModel
-                    ) { timeSlotData, selectedTime ->
+                    ) { timeSlotData, selectedTime, resource ->
                         mainActivityViewModel.selectedAppointmentData.timeSlotData = getSelectedTimeData(timeSlotData, selectedTime)
+                        mainActivityViewModel.responseDataForBooking = resource
                         currentStep.value++
                     }
                 }
                 4 -> {
-                    AppointmentReviewScreen(mainActivityViewModel) {
+                    AppointmentReviewScreen(mainActivityViewModel, appointmentViewModel, onScheduleAppointmentClick = {
                         onAppointmentScheduleClicked()
-                    }
+                    }) {}
                 }
             }
         }

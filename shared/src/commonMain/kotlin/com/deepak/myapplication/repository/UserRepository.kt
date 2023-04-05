@@ -5,6 +5,7 @@ import com.deepak.myapplication.infra.RemoteRoutes
 import com.deepak.myapplication.local.DataBase
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.model.AccessTokenData
+import com.deepak.myapplication.model.BookingResource
 import com.deepak.myapplication.model.Resource
 import comdeepakmyapplicationlocal.User
 import io.ktor.client.*
@@ -21,7 +22,7 @@ interface UserRepository {
     suspend fun getTheUser(email: String): User?
     suspend fun getToken(): AppRequest
 
-    suspend fun bookAppointment(appointmentSlotReq: Resource): AppRequest
+    suspend fun bookAppointment(appointmentSlotReq: BookingResource): AppRequest
 }
 
 class UserRepositoryImpl constructor(
@@ -60,7 +61,7 @@ class UserRepositoryImpl constructor(
         }
     }
 
-    override suspend fun bookAppointment(appointmentSlotReq: Resource): AppRequest {
+    override suspend fun bookAppointment(appointmentSlotReq: BookingResource): AppRequest {
         return try {
             val response = httpClient.post(RemoteRoutes.APPOINTMENT) {
                 val token = userSettingsRepository.getAccessToken() ?: ""

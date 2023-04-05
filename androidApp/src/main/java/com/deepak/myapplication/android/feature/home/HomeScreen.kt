@@ -42,6 +42,7 @@ fun HomeScreen() {
     val viewModelState by viewModel.homeUiState.collectAsState()
     LaunchedEffect(key1 = lifecycle, block = {
         viewModel.getPatientDetails()
+        viewModel.getDoctorsData()
     })
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         AppBarWithTitle(title = "Hapi Care")
@@ -236,10 +237,11 @@ fun DoctorCardUi(name: String, designation: String, imageUrl: String) {
                             error(R.drawable.baseline_person_24)
                         },
                     ),
-                    contentScale = ContentScale.Fit,
+                    contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .size(140.dp, 180.dp)
+                        .clip(RoundedCornerShape(24.dp))
                 )
             }
         }

@@ -3,8 +3,10 @@ package com.deepak.myapplication.usecase
 import com.deepak.myapplication.datamapper.AppointmentDataMapper
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.local.UserSettingsRepository
+import com.deepak.myapplication.model.BookingResource
 import com.deepak.myapplication.repository.PatientRepository
 import com.deepak.myapplication.repository.PractitionerRepository
+import com.deepak.myapplication.repository.UserRepository
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -14,6 +16,7 @@ class AppointmentUseCase(
     private val userSettingsRepository: UserSettingsRepository,
     private val patientRepository: PatientRepository,
     private val practitionerRepository: PractitionerRepository,
+    private val userRepository: UserRepository,
     private val appointmentDataMapper: AppointmentDataMapper
 ) {
 
@@ -42,7 +45,7 @@ class AppointmentUseCase(
                     patientId = patientId,
                     startDate = startDate.toString(),
                     endDate = "",
-                    count = 5
+                    count = 100
                 )
             )
         } ?: kotlin.run {
@@ -108,6 +111,10 @@ class AppointmentUseCase(
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
         }
+    }
+
+    suspend fun bookAppointment(resource: BookingResource): AppRequest {
+        return userRepository.bookAppointment(resource)
     }
 }
 

@@ -3,6 +3,7 @@ package com.deepak.myapplication.android.feature.appointments
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,7 +32,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppointmentsScreen(
-    onAddAppointmentClicked: () -> Unit
+    onAddAppointmentClicked: () -> Unit,
+    onAppointmentCardClicked: (AppointmentScheduleData) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val viewModel: AppointmentViewModel = koinViewModel()
@@ -68,7 +70,7 @@ fun AppointmentsScreen(
                     }
 
                     items(viewModel.todaysAppointments.value) {
-                        AppointmentCard(it)
+                        AppointmentCard(it, onAppointmentCardClicked)
                     }
 
                     if (viewModel.upcomingAppointments.value.isEmpty().not()) {
@@ -83,7 +85,7 @@ fun AppointmentsScreen(
                         }
                     }
                     items(viewModel.upcomingAppointments.value) {
-                        AppointmentCard(it)
+                        AppointmentCard(it, onAppointmentCardClicked)
                     }
 
                     if (viewModel.pastAppointments.value.isEmpty().not()) {
@@ -98,7 +100,7 @@ fun AppointmentsScreen(
                         }
                     }
                     items(viewModel.pastAppointments.value) {
-                        AppointmentCard(it)
+                        AppointmentCard(it, onAppointmentCardClicked)
                     }
                 }
             }
@@ -107,11 +109,12 @@ fun AppointmentsScreen(
 }
 
 @Composable
-fun AppointmentCard(appointmentScheduleData: AppointmentScheduleData) {
+fun AppointmentCard(appointmentScheduleData: AppointmentScheduleData, onAppointmentCardClicked: (AppointmentScheduleData) -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onAppointmentCardClicked.invoke(appointmentScheduleData) }
             .height(320.dp)
             .padding(end = 16.dp)
             .border(

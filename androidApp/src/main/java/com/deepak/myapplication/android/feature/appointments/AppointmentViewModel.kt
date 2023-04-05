@@ -21,6 +21,10 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
 
     var timeSlotDataState = mutableStateOf<List<TimeSlotData>>(emptyList())
 
+    var appointmentBookingSuccess = mutableStateOf(false)
+
+    var appointmentBookingError = mutableStateOf(false)
+
     fun getPatientAppointmentSchedules() {
         getPastAppointments()
         getTodaysAppointments()
@@ -89,6 +93,17 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
                 data.result.let {
                     timeSlotDataState.value = data.result.filterIsInstance<TimeSlotData>().takeIf { it.size == data.result.size } ?: emptyList()
                 }
+            }
+        }
+    }
+
+    fun bookAppointment(resource: BookingResource) {
+        viewModelScope.launch {
+            val data = appointmentUseCase.bookAppointment(resource)
+            if (data is AppRequest.Result<*>) {
+                appointmentBookingSuccess.value = true
+            } else {
+                appointmentBookingError.value = true
             }
         }
     }

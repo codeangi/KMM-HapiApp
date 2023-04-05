@@ -9,4 +9,5 @@ object Routes {
     const val DOCTOR_DETAILS_SCREEN = "doctor_details_screen"
     const val SCHEDULE_APPOINTMENT_FLOW_SCREEN = "schedule_appointment_flow_screen"
     const val SCHEDULE_APPOINTMENT_SUCCESS_SCREEN = "schedule_appointment_success_screen"
+    const val APPOINTMENT_DETAILS_SCREEN = "appointment_details_screen"
 }

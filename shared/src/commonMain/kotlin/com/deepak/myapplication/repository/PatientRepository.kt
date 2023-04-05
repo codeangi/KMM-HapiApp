@@ -77,6 +77,7 @@ class PatientRepositoryImpl constructor(
                         parameters.append("date", "gt$startDate")
                     }
                     parameters.append("_include", "Appointment:practitioner")
+                    parameters.append("_include", "Appointment:reason-reference")
                 }
             }
             val data = responseData.body<AppointmentResp>()

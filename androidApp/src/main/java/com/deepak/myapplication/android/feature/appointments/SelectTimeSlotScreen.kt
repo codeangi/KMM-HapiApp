@@ -21,6 +21,7 @@ import com.deepak.myapplication.android.MainActivityViewModel
 import com.deepak.myapplication.android.theme.customCyan
 import com.deepak.myapplication.android.theme.lightGrey
 import com.deepak.myapplication.android.viewPort
+import com.deepak.myapplication.model.Resource
 import com.deepak.myapplication.model.TimeSlotData
 
 var currentMonth: String? = null
@@ -29,7 +30,7 @@ var currentMonth: String? = null
 fun SelectTimeSlotScreen(
     appointmentViewModel: AppointmentViewModel,
     mainActivityViewModel: MainActivityViewModel,
-    onClickOfTimeSlot: (TimeSlotData, String) -> Unit
+    onClickOfTimeSlot: (TimeSlotData, String, Resource?) -> Unit
 ) {
 
     val timeSlotList: MutableState<List<TimeSlotData>> = appointmentViewModel.timeSlotDataState
@@ -70,7 +71,7 @@ fun SelectTimeSlotScreen(
 }
 
 @Composable
-fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotData, String) -> Unit) {
+fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotData, String, Resource?) -> Unit) {
     if (timeSlotData.month != currentMonth) {
         MonthDataUi(timeSlotData.month ?: "", timeSlotData.year ?: "")
         currentMonth = timeSlotData.month
@@ -88,9 +89,11 @@ fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotDa
             LazyRow {
                 timeSlotData.dayAndTimeMap?.second?.toList()?.let {
                     items(it) { time ->
-                        TimeDataUi(time) {selectedTime ->
-                            onClickOfTimeSlot(timeSlotData, selectedTime)
+                        time.time?.let {
+                            TimeDataUi(it) { selectedTime ->
+                            onClickOfTimeSlot(timeSlotData, selectedTime, time.response)
                             currentMonth = null
+                        }
                         }
                     }
                 }

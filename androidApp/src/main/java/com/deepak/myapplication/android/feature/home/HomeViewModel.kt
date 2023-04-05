@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
-import com.deepak.myapplication.model.AppointmentResp
-import com.deepak.myapplication.model.ClinicData
-import com.deepak.myapplication.model.DoctorData
-import com.deepak.myapplication.model.PatientDataResp
+import com.deepak.myapplication.model.*
 import com.deepak.myapplication.usecase.AppointmentUseCase
 import com.deepak.myapplication.usecase.HomeUseCase
 import com.deepak.myapplication.usecase.KMPPractitionerUseCase
@@ -71,15 +68,29 @@ class HomeViewModel constructor(
             if( appointSlots is AppRequest.Result<*> && appointSlots.result is AppointmentResp){
                 val entry = (appointSlots.result as AppointmentResp).entry?.last()
                 entry?.resource?.let {
-                   val resp =  homeUseCase.bookAppointment(it)
+                   val resp =  homeUseCase.bookAppointment(
+                       BookingResource(
+                           it.id,
+                           it.resourceType,
+                           "Add comments",
+                           ServiceType(
+                               Coding(
+                                   code = "code",
+                                   system = null,
+                                   display = "reason"
+                               )
+                           ),
+                           contained = listOf(it)
+                       )
+                   )
                     Log.d("HomeViewModel","Booking appointment resp:$resp")
                 }
             }
         }
     }
 
-    private fun getDoctorsData() {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun getDoctorsData() {
+        viewModelScope.launch {
             val data = homeUseCase.getDoctorsData()
             if (data is AppRequest.ListResult<*> && data.result.firstOrNull() is DoctorData) {
                 data.result.let {
