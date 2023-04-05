@@ -13,7 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,11 +40,27 @@ fun AppointmentsScreen(
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val viewModel: AppointmentViewModel = koinViewModel()
+    val isLoading by viewModel.isApiLoading.collectAsState()
+
     LaunchedEffect(key1 = lifecycle, block = {
         viewModel.getPatientAppointmentSchedules()
     })
     Scaffold(modifier = Modifier.fillMaxSize()) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                    Modifier.size(48.dp)
+                        .align(Center),
+                    color = Color.Black
+                )
+                }
+            }
+
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .padding(viewPort)) {

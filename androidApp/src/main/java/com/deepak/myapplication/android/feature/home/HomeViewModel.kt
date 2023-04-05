@@ -1,6 +1,7 @@
 package com.deepak.myapplication.android.feature.home
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
@@ -28,8 +29,10 @@ class HomeViewModel constructor(
 
     var doctorDataUiState = MutableStateFlow(listOf(DoctorData()))
     var clinicDataUiState = MutableStateFlow(listOf(ClinicData()))
+    var isApiLoading = MutableStateFlow(false)
 
     init {
+        isApiLoading.value = true
         getClinicData()
         getDoctorsData()
         viewModelScope.launch(Dispatchers.IO) {
@@ -95,6 +98,7 @@ class HomeViewModel constructor(
             if (data is AppRequest.ListResult<*> && data.result.firstOrNull() is DoctorData) {
                 data.result.let {
                     doctorDataUiState.value = data.result.filterIsInstance<DoctorData>()
+                    isApiLoading.value = false
                 }
             }
         }
@@ -107,6 +111,7 @@ class HomeViewModel constructor(
                 data.result.let {
                     clinicDataUiState.value = data.result.filterIsInstance<ClinicData>()
                         .takeIf { it.size == data.result.size } ?: emptyList()
+                    isApiLoading.value = false
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.deepak.myapplication.android.feature.appointments
 
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +49,8 @@ fun AppointmentReviewScreen(
         appointmentViewModel.appointmentBookingSuccess.value = false
     }
 
+    val isLoading by appointmentViewModel.isApiLoading.collectAsState()
+
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     DisposableEffect(key1 = lifecycle) {
@@ -70,6 +72,18 @@ fun AppointmentReviewScreen(
             }
         }) {
 
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Center
+            ) {
+                CircularProgressIndicator(
+                    Modifier.size(48.dp)
+                        .align(Center),
+                    color = Color.Black
+                )
+            }
+        }
         Column(modifier = Modifier.padding(viewPort)) {
             if (isScheduleButtonRequired.not()) {
                 Icon(

@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +40,7 @@ fun HomeScreen() {
     val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.US)
     val currentDate = Date()
     val formattedDate = dateFormat.format(currentDate)
+    val isLoading by viewModel.isApiLoading.collectAsState()
     val viewModelState by viewModel.homeUiState.collectAsState()
     LaunchedEffect(key1 = lifecycle, block = {
         viewModel.getPatientDetails()
@@ -48,6 +50,18 @@ fun HomeScreen() {
         AppBarWithTitle(title = "Hapi Care")
     }) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                    Modifier.size(48.dp)
+                        .align(Center),
+                    color = Color.Black
+                )
+                }
+            }
             Column(modifier = Modifier
                 .padding(horizontal = viewPort)
                 .verticalScroll(rememberScrollState())
