@@ -1,6 +1,5 @@
 package com.deepak.myapplication.android.feature.appointments
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -23,8 +21,6 @@ import com.deepak.myapplication.android.theme.lightGrey
 import com.deepak.myapplication.android.viewPort
 import com.deepak.myapplication.model.Resource
 import com.deepak.myapplication.model.TimeSlotData
-
-var currentMonth: String? = null
 
 @Composable
 fun SelectTimeSlotScreen(
@@ -41,12 +37,6 @@ fun SelectTimeSlotScreen(
             appointmentViewModel.getAppointmentTimeSlots(it)
         }
     })
-
-    DisposableEffect(Unit) {
-        onDispose {
-            currentMonth = null
-        }
-    }
 
     Column(modifier = Modifier.padding(viewPort)) {
         Text(
@@ -72,9 +62,8 @@ fun SelectTimeSlotScreen(
 
 @Composable
 fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotData, String, Resource?) -> Unit) {
-    if (timeSlotData.month != currentMonth) {
+    if (timeSlotData.showMonth) {
         MonthDataUi(timeSlotData.month ?: "", timeSlotData.year ?: "")
-        currentMonth = timeSlotData.month
         Divider(Modifier.height(1.dp), color = lightGrey)
     }
     Column {
@@ -92,7 +81,6 @@ fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotDa
                         time.time?.let {
                             TimeDataUi(it) { selectedTime ->
                             onClickOfTimeSlot(timeSlotData, selectedTime, time.response)
-                            currentMonth = null
                         }
                         }
                     }

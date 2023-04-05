@@ -2,6 +2,7 @@ package com.deepak.myapplication.model
 
 data class TimeSlotData(
     val month: String? = null,
+    val showMonth: Boolean = false,
     val year: String? = null,
     val dayAndTimeMap: Pair<DateData, MutableList<TimeWithResponseData>>? = null,
     val requestBodyForBooking: Resource? = null

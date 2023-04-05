@@ -157,11 +157,13 @@ class AppointmentDataMapper {
                     dateMap[DateData(dayOfWeek, dateOfMonth, month, localTimeDate.year.toString())] = dateList
                 }
             }
+            var prevMonth = ""
             dateMap.forEach {
                 dataList.add(
                     TimeSlotData(
                         month = it.key.month,
                         year = it.key.year,
+                        showMonth = prevMonth != it.key.month,
                         dayAndTimeMap = Pair(
                             it.key,
                             it.value.distinctBy { it.time }.sortedWith { s1, s2 ->
@@ -173,6 +175,7 @@ class AppointmentDataMapper {
                         )
                     )
                 )
+                prevMonth = it.key.month ?: ""
             }
         }
         val sortedList = dataList
