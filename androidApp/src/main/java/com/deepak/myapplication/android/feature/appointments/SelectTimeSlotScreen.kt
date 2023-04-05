@@ -8,12 +8,16 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.deepak.myapplication.android.MainActivityViewModel
 import com.deepak.myapplication.android.theme.customCyan
 import com.deepak.myapplication.android.theme.lightGrey
 import com.deepak.myapplication.android.viewPort
@@ -22,7 +26,27 @@ import com.deepak.myapplication.model.TimeSlotData
 var currentMonth: String? = null
 
 @Composable
-fun SelectTimeSlotScreen(timeSlotList: MutableState<List<TimeSlotData>>,onClickOfTimeSlot: (TimeSlotData, String) -> Unit) {
+fun SelectTimeSlotScreen(
+    appointmentViewModel: AppointmentViewModel,
+    mainActivityViewModel: MainActivityViewModel,
+    onClickOfTimeSlot: (TimeSlotData, String) -> Unit
+) {
+
+    val timeSlotList: MutableState<List<TimeSlotData>> = appointmentViewModel.timeSlotDataState
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    LaunchedEffect(key1 = lifecycle, block = {
+        mainActivityViewModel.selectedCareTeamDoctor?.practitionerId?.let {
+            appointmentViewModel.getAppointmentTimeSlots(it)
+        }
+    })
+
+    DisposableEffect(Unit) {
+        onDispose {
+            currentMonth = null
+        }
+    }
+
     Column(modifier = Modifier.padding(viewPort)) {
         Text(
             text = "When would you like to be seen?",
@@ -56,16 +80,17 @@ fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotDa
         Spacer(modifier = Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
            Column {
-               Text(text = "TUE",  style = MaterialTheme.typography.body1, fontWeight = FontWeight.W600, color = Color.Black)
+               Text(text = timeSlotData.dayAndTimeMap?.first?.weekDay ?: "",  style = MaterialTheme.typography.body1, fontWeight = FontWeight.W600, color = Color.Black)
                Spacer(modifier = Modifier.height(4.dp))
-               Text(text = timeSlotData.dayAndTimeMap?.keys?.firstOrNull() ?: "",  style = MaterialTheme.typography.h6, color = Color.Black)
+               Text(text = timeSlotData.dayAndTimeMap?.first?.date ?: "",  style = MaterialTheme.typography.h6, color = Color.Black)
            }
             Spacer(modifier = Modifier.width(16.dp))
             LazyRow {
-                timeSlotData.dayAndTimeMap?.values?.firstOrNull()?.let {
+                timeSlotData.dayAndTimeMap?.second?.toList()?.let {
                     items(it) { time ->
                         TimeDataUi(time) {selectedTime ->
                             onClickOfTimeSlot(timeSlotData, selectedTime)
+                            currentMonth = null
                         }
                     }
                 }

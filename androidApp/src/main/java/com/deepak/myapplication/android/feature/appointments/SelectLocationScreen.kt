@@ -17,11 +17,12 @@ import com.deepak.myapplication.android.R
 import com.deepak.myapplication.android.theme.customCyan
 import com.deepak.myapplication.android.theme.lightGrey
 import com.deepak.myapplication.android.viewPort
+import com.deepak.myapplication.model.CareTeamData
 import com.deepak.myapplication.model.LocationData
 
 
 @Composable
-fun SelectLocationScreen(onClickOfLocation: (LocationData) -> Unit) {
+fun SelectLocationScreen(selectedCareTeam: CareTeamData?, onClickOfLocation: (LocationData) -> Unit) {
     Column(modifier = Modifier.padding(viewPort)) {
         Text(
             text = "Where would you like to be seen?",
@@ -36,8 +37,8 @@ fun SelectLocationScreen(onClickOfLocation: (LocationData) -> Unit) {
             item {
                 LocationCardUi(
                     LocationData(
-                    "Measured Wellness Llc",
-                    "30 Warren St Boston, MA 021353602",
+                    selectedCareTeam?.hospitalLocation,
+                        selectedCareTeam?.locationAddress,
                     "Attending hours:\n8AM - 2PM - Mon,Tue,Wed,Thur,Fri"
                 ), onClickOfLocation)
             }

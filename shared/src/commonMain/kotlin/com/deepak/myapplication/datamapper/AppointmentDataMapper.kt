@@ -2,179 +2,180 @@ package com.deepak.myapplication.datamapper
 
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.model.*
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class AppointmentDataMapper {
-    val aboutText = "Dr. Parker’s research involves nutritional support of the premature infant with an emphasis on breastfeeding infants in the neonatal intensive care unit (NICU). She has been funded by the National Institute of Nursing Research to study (1) the risks and benefits of routine gastric residual aspiration and evaluation in very premature infants and (2) the optimal timing of initiation of milk expression following the delivery of a very premature infant. She recently received a 2018 Research Opportunity grant to study strategies to increase lactation success in mothers of extremely premature infants. She received a UF Term Professorship award in 2017." +
-            "SERVICE" +
-            "Dr. Parker is board certified as a neonatal nurse practitioner by the National Certification Corporation. She has an active practice as a neonatal nurse practitioner in the NICU at UF Health."
 
+    companion object {
+        const val PRACTITIONER_START_DATE = "practitioner-practice-start"
+        const val PRACTITIONER_EDUCATION = "practitioner-education"
+        const val PRACTITIONER_RESIDENCY = "practitioner-residency"
+        const val RESOURCE_CARE_TEAM = "CareTeam"
+        const val RESOURCE_ORGANIZATION = "Organization"
+        const val RESOURCE_PRACTITIONER = "Practitioner"
+        const val PRACTITIONER_ABOUT = "practitioner-about"
+    }
 
-    fun getPatientAppointmentSchedules() : AppRequest {
-        val data = listOf(
-            AppointmentScheduleData(
-                "Headache",
-                "Tuesday, Mar 14 at 8.30 PM",
-                "Dr. Leslie Crona, RN",
-                "Measured Wellness Llc"
-            ),
-            AppointmentScheduleData(
-                "Viral Fever",
-                "Tuesday, Mar 12 at 8.30 PM",
-                "Dr. Leslie Crona, RN",
-                "Measured Wellness Llc"
-            ),
-            AppointmentScheduleData(
-                "Headache",
-                "Tuesday, Mar 11 at 8.30 PM",
-                "Dr. Betsey Kemmer, DOS",
-                "Measured Wellness Llc"
-            ),
-            AppointmentScheduleData(
-                "Headache",
-                "Tuesday, Mar 21 at 8.30 PM",
-                "Dr. Leslie Crona, RN",
-                "Measured Wellness Llc"
-            ),
-            AppointmentScheduleData(
-                "Headache",
-                "Tuesday, Mar 24 at 8.30 PM",
-                "Dr. Betsey Kemmer, DOS",
-                "Measured Wellness Llc"
-            )
-        )
-        return AppRequest.ListResult(data)
+    fun getPatientAppointmentSchedules(appointmentsResponse: AppRequest, isToday: Boolean = false) : AppRequest {
+        val dataList = mutableListOf<AppointmentScheduleData>()
+        if (appointmentsResponse is AppRequest.Result<*> && appointmentsResponse.result is AppointmentResp) {
+            appointmentsResponse.result.let { response ->
+                response.entry?.forEach { entry ->
+                    var appointmentDate = ""
+                    entry.resource.start?.let {
+                        val localTimeDate =
+                            Instant.parse(entry.resource.start.substring(0, 19) + "Z")
+                                .toLocalDateTime(TimeZone.currentSystemDefault())
+                        val month = localTimeDate.month.name.substring(0, 3).lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        val dateOfMonth = localTimeDate.dayOfMonth.toString().lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        val dayOfWeek = localTimeDate.dayOfWeek.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        val time =
+                            "${localTimeDate.time.hour % 12}:${localTimeDate.time.minute} ${if (localTimeDate.time.hour % 12 == 0) "AM" else "PM"}"
+
+                        appointmentDate = "${dayOfWeek}, $month $dateOfMonth at $time"
+                        if (isToday) {
+                            if (localTimeDate.date == Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date) {
+                                dataList.add(
+                                    AppointmentScheduleData(
+                                        entry.resource.reasonCode?.firstOrNull()?.coding?.firstOrNull()?.display,
+                                        appointmentDate,
+                                        "Dr. Leslie Crona, RN",
+                                        "Measured Wellness Llc"
+                                    )
+                                )
+                            }
+                        } else {
+                            if (localTimeDate.date != Clock.System.now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            ) {
+                                dataList.add(
+                                    AppointmentScheduleData(
+                                        entry.resource.reasonCode?.firstOrNull()?.coding?.firstOrNull()?.display,
+                                        appointmentDate,
+                                        "Dr. Leslie Crona, RN",
+                                        "Measured Wellness Llc"
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+                return AppRequest.ListResult(dataList)
+            }
+        } else {
+            return AppRequest.ListResult<AppointmentScheduleData>(emptyList())
+        }
+    }
+
+    private fun getDoctorName(careTeam: List<Entry>?, id: String): String? {
+        var doctorName: String? = ""
+        careTeam?.forEach {
+            val doctorData = it.resource.participant?.filter { it.member?.reference?.contains(id) == true }
+            if (doctorData.isNullOrEmpty().not()) {
+                 doctorName = doctorData?.firstOrNull()?.member?.display
+            }
+        }
+        return doctorName
+    }
+
+    private fun getYearsOfPractice(entry: Entry): String {
+        val presentYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
+        val practiceStartYear = entry.resource.extension?.find { it.url?.contains(PRACTITIONER_START_DATE) == true }?.valueInteger ?: 0
+        return (presentYear - practiceStartYear).toString()
     }
 
     fun getMyCareTeamData(patientCareTeam: AppRequest): AppRequest {
-//        val dataList = mutableListOf<CareTeamData>()
-//        if (patientCareTeam is AppRequest.Result<*> &&  patientCareTeam.result is CareTeamResp) {
-//            patientCareTeam.result.let {
-//                it.entry?.forEach {
-//                    CareTeamData(
-//                        doctorName = "Dr. Leslie Crona, RN",
-//                        designation = "Neuropathology",
-//                        hospitalLocation = "Measured Wellness Llc",
-//                        doctorDescription = aboutText,
-//                        gender = "Female",
-//                        languages = "Spanish",
-//                        yearsOfPractice = "3",
-//                        boardCertification = "Registered Nurse",
-//                        groupAffiliations = "0 PLACE",
-//                        hospitalAffiliations = "0 HOSPITAL",
-//                        medicalSchool = "Boston University",
-//                        residency = "CHA Cambridge Hospital",
-//                        locationAddress = "47 Seaverns Ave #5 Brookline, MA 024463806"
-//                    )
-//                }
-//            }
-//
-//        }
-
-        val data = listOf(
-            CareTeamData(
-                doctorName = "Dr. Leslie Crona, RN",
-                designation = "Neuropathology",
-                hospitalLocation = "Measured Wellness Llc",
-                doctorDescription = aboutText,
-                gender = "Female",
-                languages = "Spanish",
-                yearsOfPractice = "3",
-                boardCertification = "Registered Nurse",
-                groupAffiliations = "0 PLACE",
-                hospitalAffiliations = "0 HOSPITAL",
-                medicalSchool = "Boston University",
-                residency = "CHA Cambridge Hospital",
-                locationAddress = "47 Seaverns Ave #5 Brookline, MA 024463806"
-            ),
-            CareTeamData(
-                doctorName = "Dr. Betsey Kemmer, DOS",
-                designation = "Homeopathy",
-                hospitalLocation = "Measured Wellness Llc",
-                doctorDescription = aboutText,
-                gender = "Female",
-                languages = "English",
-                yearsOfPractice = "4",
-                boardCertification = "Doctor of Science",
-                groupAffiliations = "0 PLACE",
-                hospitalAffiliations = "0 HOSPITAL",
-                medicalSchool = "Boston University",
-                residency = "CHA Cambridge Hospital",
-                locationAddress = "47 Seaverns Ave #5 Brookline, MA 024463806"
-            )
-        )
-        return AppRequest.ListResult(data)
+        val dataList = mutableListOf<CareTeamData>()
+        if (patientCareTeam is AppRequest.Result<*> &&  patientCareTeam.result is CareTeamResp) {
+            patientCareTeam.result.let { response ->
+                response.entry?.filter{ it.resource.resourceType == RESOURCE_PRACTITIONER }?.forEach {
+                    val organizationData = getOrganizationData(response.entry)
+                        dataList.add(
+                            CareTeamData(
+                                doctorName = getDoctorName(response.entry.filter { it.resource.resourceType == RESOURCE_CARE_TEAM }, it.resource.id),
+                                image = it.resource.photo?.firstOrNull()?.url,
+                                practitionerId = it.resource.id,
+                                designation = it.resource.qualification?.firstOrNull()?.code?.text,
+                                hospitalLocation = organizationData?.member?.display,
+                                doctorDescription = it.resource.extension?.find { it.url?.contains(PRACTITIONER_ABOUT) == true }?.valueString,
+                                gender = it.resource.gender?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() },
+                                languages = it.resource.communication?.firstOrNull()?.text,
+                                yearsOfPractice = getYearsOfPractice(it),
+                                boardCertification = it.resource.qualification?.firstOrNull()?.code?.text,
+                                groupAffiliations = "0 PLACE",
+                                hospitalAffiliations = "0 HOSPITAL",
+                                medicalSchool = it.resource.extension?.find { it.url?.contains(PRACTITIONER_EDUCATION) == true }?.valueString?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() },
+                                residency = it.resource.extension?.find { it.url?.contains(PRACTITIONER_RESIDENCY) == true }?.valueString,
+                                locationAddress = getAddress(response.entry.filter { it.resource.resourceType == RESOURCE_ORGANIZATION }, organizationData?.member?.reference)
+                            )
+                        )
+                    }
+                }
+            }
+        return AppRequest.ListResult(dataList)
     }
 
-    fun getAppointmentsTimeSlot(): AppRequest {
-        val data = listOf(
-            TimeSlotData(
-                month = "April",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("14", listOf("6.30 PM", "10.30 PM"))
-                )
-            ),
-            TimeSlotData(
-                month = "April",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("16", listOf("6.30 PM", "10.30 PM"))
-                )
+    private fun getOrganizationData(entry: List<Entry>): Participant? {
+        val careTeamParticipants =
+            entry.firstOrNull { it.resource.resourceType == RESOURCE_CARE_TEAM }?.resource?.participant
+        return careTeamParticipants?.firstOrNull {
+            it.member?.reference?.contains(
+                RESOURCE_ORGANIZATION
+            ) == true
+        }
+    }
 
-            ),
-            TimeSlotData(
-                month = "April",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("21", listOf("6.30 PM","8.30 PM", "10.30 PM"))
-                )
+    private fun getAddress(address: List<Entry>, reference: String?): String {
+        var orgAddress = ""
+        reference?.let {ref ->
+            val orgAddressObj = address.firstOrNull { it.fullUrl.contains(ref) }?.resource?.address?.firstOrNull()
+            orgAddressObj?.let {
+                orgAddress = "${it.line?.joinToString { " " }} ${it.city}, ${it.state} ${it.postalCode}"
+            }
+        }
+        return orgAddress.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    }
 
-            ),
-            TimeSlotData(
-                month = "May",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("08", listOf("6.30 PM", "10.30 PM", "12.30 PM",))
-                )
-            ),
-            TimeSlotData(
-                month = "May",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("14", listOf("6.30 PM"))
-                )
-            ),
-            TimeSlotData(
-                month = "May",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("21", listOf("6.30 PM", "10.30 PM", "12.30 PM","18.30 PM"))
-                )
-            ),
+    fun getAppointmentsTimeSlot(timeSlotResponse: AppRequest): AppRequest {
+        val dataList = mutableListOf<TimeSlotData>()
+        val dateMap = linkedMapOf<DateData, List<String>>()
+        val dateList = mutableListOf<String>()
 
-            TimeSlotData(
-                month = "May",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("22", listOf("6.30 PM", "10.30 PM"))
+        if (timeSlotResponse is AppRequest.Result<*> && timeSlotResponse.result is AppointmentResp) {
+            timeSlotResponse.result.entry?.forEach {
+                it.resource.start?.let { date ->
+                    val localTimeDate = Instant.parse(date.substring(0, 19) + "Z").toLocalDateTime(TimeZone.currentSystemDefault())
+                    val month = localTimeDate.month.name
+                    val dateOfMonth = localTimeDate.dayOfMonth.toString()
+                    val dayOfWeek = localTimeDate.dayOfWeek.name.subSequence(0,3).toString().uppercase()
+                    val time = "${localTimeDate.time.hour % 12}:${localTimeDate.time.minute} ${if (localTimeDate.time.hour % 12 == 0) "AM" else "PM"}"
+                    dateList.add(time)
+                    dateMap[DateData(dayOfWeek, dateOfMonth, month, localTimeDate.year.toString())] = dateList
+                }
+            }
+            dateMap.forEach {
+                dataList.add(
+                    TimeSlotData(
+                        month = it.key.month,
+                        year = it.key.year,
+                        dayAndTimeMap = Pair(
+                            it.key,
+                            it.value.distinct().sortedWith { s1, s2 ->
+                                when {
+                                    s1.length != s2.length -> s1.length - s2.length
+                                    else -> s1.compareTo(s2)
+                                }
+                            }.toMutableList()
+                        )
+                    )
                 )
-            ),
-
-            TimeSlotData(
-                month = "June",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("01", listOf("6.30 PM", "10.30 PM"))
-                )
-            ),
-            TimeSlotData(
-                month = "June",
-                year = "2023",
-                dayAndTimeMap = hashMapOf(
-                    Pair("04", listOf("6.30 PM", "10.30 PM"))
-                )
-            )
-        )
-        return AppRequest.ListResult(data)
+            }
+        }
+        val sortedList = dataList.toList() // Convert to a list of key-value pairs
+            .sortedWith(compareBy({ it.dayAndTimeMap?.first?.month }, { it.dayAndTimeMap?.first?.date?.toInt() })) // Sort by year and then by month
+        return AppRequest.ListResult(sortedList)
     }
 }

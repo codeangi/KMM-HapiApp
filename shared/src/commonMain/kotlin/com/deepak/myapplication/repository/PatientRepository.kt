@@ -51,6 +51,7 @@ class PatientRepositoryImpl constructor(
         } catch (e: Exception) {
             AppRequest.Error(e)
         }
+
     }
 
     override suspend fun getPatientAppointments(

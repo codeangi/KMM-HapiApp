@@ -47,7 +47,11 @@ class HomeUseCase constructor(
     }
 
     suspend fun getDoctorsData(): AppRequest {
-        return dataMapper.getDoctorsDataFromResponse()
+        return getPatientId()?.let { patientId ->
+            dataMapper.getDoctorsDataFromResponse(patientRepository.getPatientCareTeam(patientId))
+        } ?: kotlin.run {
+            AppRequest.Error(Exception("Patient should not be null"))
+        }
     }
 
     suspend fun bookAppointment(resource: Resource): AppRequest {

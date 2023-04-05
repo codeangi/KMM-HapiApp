@@ -3,6 +3,7 @@ package com.deepak.myapplication.model
 @kotlinx.serialization.Serializable
 data class CareTeamData(
     val doctorName: String? = null,
+    val practitionerId: String? = null,
     val designation: String? = null,
     val hospitalLocation: String? = null,
     val image: String? = null,

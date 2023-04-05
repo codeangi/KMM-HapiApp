@@ -37,11 +37,31 @@ class AppointmentUseCase(
     suspend fun getPatientFutureAppointments(): AppRequest {
         val startDate = Clock.System.now()
         return getPatientId()?.let { patientId ->
-            patientRepository.getPatientAppointments(
-                patientId = patientId,
-                startDate = startDate.toString(),
-                endDate = "",
-                count = 100
+            appointmentDataMapper.getPatientAppointmentSchedules(
+                patientRepository.getPatientAppointments(
+                    patientId = patientId,
+                    startDate = startDate.toString(),
+                    endDate = "",
+                    count = 5
+                )
+            )
+        } ?: kotlin.run {
+            AppRequest.Error(Exception("Patient should not be null"))
+        }
+    }
+
+    suspend fun getPatientTodaysAppointments(): AppRequest {
+        val startDate = Clock.System.now()
+
+        return getPatientId()?.let { patientId ->
+            appointmentDataMapper.getPatientAppointmentSchedules(
+                patientRepository.getPatientAppointments(
+                    patientId = patientId,
+                    startDate = startDate.toString(),
+                    endDate = "",
+                    count = 5
+                ),
+                isToday = true
             )
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
@@ -51,11 +71,13 @@ class AppointmentUseCase(
     suspend fun getPatientPastAppointments(): AppRequest {
         val endDate = Clock.System.now()
         return getPatientId()?.let { patientId ->
-            patientRepository.getPatientAppointments(
-                patientId = patientId,
-                startDate = "",
-                endDate = endDate.toString(),
-                count = 100
+            appointmentDataMapper.getPatientAppointmentSchedules(
+                patientRepository.getPatientAppointments(
+                    patientId = patientId,
+                    startDate = "",
+                    endDate = endDate.toString(),
+                    count = 5
+                )
             )
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
@@ -66,11 +88,13 @@ class AppointmentUseCase(
         val startDate = Clock.System.now()
         val endDate = Clock.System.now().plus(Duration.parse("14d"))
         return getPatientId()?.let { patientId ->
-            practitionerRepository.getAppointment(
-                practitionerId = practitionerId,
-                patientId = patientId,
-                starDate = startDate.toString(),
-                endDate = endDate.toString()
+            appointmentDataMapper.getAppointmentsTimeSlot(
+                practitionerRepository.getAppointment(
+                    practitionerId = practitionerId,
+                    patientId = patientId,
+                    starDate = startDate.toString(),
+                    endDate = endDate.toString()
+                )
             )
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
@@ -84,14 +108,6 @@ class AppointmentUseCase(
         } ?: kotlin.run {
             AppRequest.Error(Exception("Patient should not be null"))
         }
-    }
-
-    suspend fun getAppointmentsTimeSlot(): AppRequest {
-        return appointmentDataMapper.getAppointmentsTimeSlot()
-    }
-
-    suspend fun getPatientAppointmentSchedules(): AppRequest {
-        return appointmentDataMapper.getPatientAppointmentSchedules()
     }
 }
 

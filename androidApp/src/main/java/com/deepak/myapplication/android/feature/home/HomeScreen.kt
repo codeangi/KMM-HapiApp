@@ -21,19 +21,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.deepak.myapplication.android.AppBarWithTitle
 import com.deepak.myapplication.android.R
 import com.deepak.myapplication.android.theme.customBlue
 import com.deepak.myapplication.android.theme.customCyan
-import com.deepak.myapplication.android.theme.customCyan
 import com.deepak.myapplication.android.theme.lightGrey
 import com.deepak.myapplication.android.viewPort
 import org.koin.androidx.compose.koinViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun HomeScreen() {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val viewModel: HomeViewModel = koinViewModel()
+    val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.US)
+    val currentDate = Date()
+    val formattedDate = dateFormat.format(currentDate)
     val viewModelState by viewModel.homeUiState.collectAsState()
     LaunchedEffect(key1 = lifecycle, block = {
         viewModel.getPatientDetails()
@@ -50,7 +55,7 @@ fun HomeScreen() {
 
                 Text(text = "Hi, ${viewModelState.patientName?:""}", style = MaterialTheme.typography.h4, fontWeight = FontWeight.W700, color = Color.Black)
 
-                Text(text = "Monday, March 13", style = MaterialTheme.typography.body1)
+                Text(text = formattedDate, style = MaterialTheme.typography.body1)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -198,14 +203,14 @@ fun MyDoctorSectionUi(viewModel: HomeViewModel) {
 
         LazyRow {
             items(viewModel.doctorDataUiState.value) {
-                DoctorCardUi(it.doctorName ?: "", it.designation ?: "")
+                DoctorCardUi(it.doctorName ?: "", it.designation ?: "", it.imageUrl ?: "")
             }
         }
     }
 }
 
 @Composable
-fun DoctorCardUi(name: String, designation: String) {
+fun DoctorCardUi(name: String, designation: String, imageUrl: String) {
     Column(Modifier.padding(end = 12.dp)) {
         Box(
             modifier = Modifier
@@ -213,13 +218,30 @@ fun DoctorCardUi(name: String, designation: String) {
                 .background(customCyan, shape = RoundedCornerShape(24.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_person_24),
-                contentDescription = null,
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(64.dp, 64.dp)
-            )
+            if(imageUrl.isNullOrEmpty()) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_person_24),
+                    contentDescription = null,
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(64.dp, 64.dp)
+                )
+            } else {
+                Image(
+                    painter = rememberImagePainter(
+                        data = imageUrl,
+                        builder = {
+                            crossfade(true)
+                            placeholder(R.drawable.baseline_person_24)
+                            error(R.drawable.baseline_person_24)
+                        },
+                    ),
+                    contentScale = ContentScale.Fit,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
         }
         Spacer(modifier = Modifier.height(4.dp))
 

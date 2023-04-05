@@ -1,13 +1,12 @@
 package com.deepak.myapplication.android.feature.appointments
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
 import com.deepak.myapplication.model.*
 import com.deepak.myapplication.usecase.AppointmentUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AppointmentViewModel constructor(private val appointmentUseCase: AppointmentUseCase) : ViewModel() {
@@ -23,21 +22,49 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
     var timeSlotDataState = mutableStateOf<List<TimeSlotData>>(emptyList())
 
     fun getPatientAppointmentSchedules() {
-        viewModelScope.launch {
-            val data = appointmentUseCase.getPatientAppointmentSchedules()
+        getPastAppointments()
+        getTodaysAppointments()
+        getFutureAppointments()
+    }
+
+    private fun getFutureAppointments() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val data = appointmentUseCase.getPatientFutureAppointments()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
                     val resultList = data.result.filterIsInstance<AppointmentScheduleData>().takeIf { it.size == data.result.size } ?: emptyList()
-                    todaysAppointments.value = listOf(resultList.first())
-                    upcomingAppointments.value = resultList.subList(3, 5)
-                    pastAppointments.value = resultList.subList(1, 3)
+                    upcomingAppointments.value = resultList
+                }
+            }
+        }
+    }
+
+    private fun getTodaysAppointments() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val data = appointmentUseCase.getPatientTodaysAppointments()
+            if (data is AppRequest.ListResult<*>) {
+                data.result.let {
+                    val resultList = data.result.filterIsInstance<AppointmentScheduleData>().takeIf { it.size == data.result.size } ?: emptyList()
+                    todaysAppointments.value = resultList
+                }
+            }
+        }
+    }
+
+    private fun getPastAppointments() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val data = appointmentUseCase.getPatientPastAppointments()
+            if (data is AppRequest.ListResult<*>) {
+                data.result.let {
+                    val resultList = data.result.filterIsInstance<AppointmentScheduleData>().takeIf { it.size == data.result.size } ?: emptyList()
+                    pastAppointments.value = resultList
                 }
             }
         }
     }
 
     fun getMyCareTeamData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = appointmentUseCase.getMyCareTeamData()
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
@@ -55,9 +82,9 @@ class AppointmentViewModel constructor(private val appointmentUseCase: Appointme
         )
     }
 
-    fun getAppointmentTimeSlots() {
-        viewModelScope.launch {
-            val data = appointmentUseCase.getAppointmentsTimeSlot()
+    fun getAppointmentTimeSlots(practitionerId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val data = appointmentUseCase.getAppointmentSlots(practitionerId)
             if (data is AppRequest.ListResult<*>) {
                 data.result.let {
                     timeSlotDataState.value = data.result.filterIsInstance<TimeSlotData>().takeIf { it.size == data.result.size } ?: emptyList()

@@ -55,29 +55,47 @@ fun AppointmentsScreen(
                         Text(text = "Appointments", style = MaterialTheme.typography.h4, fontWeight = FontWeight.W700, color = Color.Black)
                     }
 
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Today", style = MaterialTheme.typography.h6, fontWeight = FontWeight.W700, color = Color.Black)
+                    if (viewModel.todaysAppointments.value.isEmpty().not()) {
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Today",
+                                style = MaterialTheme.typography.h6,
+                                fontWeight = FontWeight.W700,
+                                color = Color.Black
+                            )
+                        }
                     }
 
                     items(viewModel.todaysAppointments.value) {
                         AppointmentCard(it)
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "Upcoming",
-                            style = MaterialTheme.typography.h6,
-                            fontWeight = FontWeight.W700,
-                            color = Color.Black
-                        )
+
+                    if (viewModel.upcomingAppointments.value.isEmpty().not()) {
+                        item {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Upcoming",
+                                style = MaterialTheme.typography.h6,
+                                fontWeight = FontWeight.W700,
+                                color = Color.Black
+                            )
+                        }
                     }
                     items(viewModel.upcomingAppointments.value) {
                         AppointmentCard(it)
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "Past", style = MaterialTheme.typography.h6, fontWeight = FontWeight.W700, color = Color.Black)
+
+                    if (viewModel.pastAppointments.value.isEmpty().not()) {
+                        item {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Past",
+                                style = MaterialTheme.typography.h6,
+                                fontWeight = FontWeight.W700,
+                                color = Color.Black
+                            )
+                        }
                     }
                     items(viewModel.pastAppointments.value) {
                         AppointmentCard(it)

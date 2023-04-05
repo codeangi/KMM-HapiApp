@@ -8,6 +8,12 @@ data class Resource(
     val schedule: Schedule?,
     val contained: List<Resource>?,
     val id: String,
+    val qualification: List<Qualification>?,
+    val extension: List<Extension>?,
+    val address: List<Address>?,
+    val gender: String?,
+    val communication: List<Code>?,
+    val photo: List<PhotoUrl>?,
     val status: String?,
     val start: String?,
     val end: String?,
@@ -21,6 +27,9 @@ data class Resource(
 
 @kotlinx.serialization.Serializable
 data class Category(val coding: List<Coding>?)
+
+@kotlinx.serialization.Serializable
+data class PhotoUrl(val url: String?)
 
 @kotlinx.serialization.Serializable
 data class Subject(val reference: String?)
