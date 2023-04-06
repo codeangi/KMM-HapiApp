@@ -58,6 +58,7 @@ class AppointmentDataMapper {
                                         appointmentDate,
                                         entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_PRACTITIONER) == true}?.actor?.display.toCamelCase(),
                                         entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_LOCATION) == true}?.actor?.display.toCamelCase(),
+                                        entry.resource.comment
                                     )
                                 )
                             }

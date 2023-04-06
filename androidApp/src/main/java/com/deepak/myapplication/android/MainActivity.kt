@@ -21,11 +21,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.deepak.myapplication.AppConstant.ADD_NOTES_DEFAULT_TEXT
 import com.deepak.myapplication.android.feature.appointments.*
 import com.deepak.myapplication.android.feature.home.HomeScreen
 import com.deepak.myapplication.android.theme.customCyan
 import com.deepak.myapplication.model.CareTeamData
 import com.deepak.myapplication.model.SelectedAppointmentData
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -34,6 +36,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
+                val systemUiController = rememberSystemUiController()
+                systemUiController.setSystemBarsColor(
+                    color = Color.White
+                )
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
@@ -53,33 +59,31 @@ fun DashboardScreenView() {
     var selectedTab: MutableState<DashboardBottomNavScreen> = remember { mutableStateOf(DashboardBottomNavScreen.Home) }
     Scaffold(
         bottomBar = {
-            if (mainActivityViewModel.showBottomNavBar.value) {
-                BottomNavigation(
-                    backgroundColor = Color.White
-                ) {
+            BottomNavigation(
+                backgroundColor = Color.White
+            ) {
 
-                    bottomNavigationItems.forEach { screen ->
-                        BottomNavigationItem(
-                            icon = { Icon(screen.icon, contentDescription = screen.title) },
-                            label = { Text(screen.title, fontSize = 9.sp, softWrap = false) },
-                            selected = selectedTab.value == screen,
-                            onClick = {
-                                navController.navigate(screen.route) {
+                bottomNavigationItems.forEach { screen ->
+                    BottomNavigationItem(
+                        icon = { Icon(screen.icon, contentDescription = screen.title) },
+                        label = { Text(screen.title, fontSize = 9.sp, softWrap = false) },
+                        selected = selectedTab.value == screen,
+                        onClick = {
+                            navController.navigate(screen.route) {
 
-                                    navController.graph.startDestinationRoute?.let { screen_route ->
-                                        popUpTo(screen_route) {
-                                            saveState = true
-                                        }
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
-                                selectedTab.value = screen
-                            },
-                            selectedContentColor = customCyan,
-                            unselectedContentColor = Color.Gray
-                        )
-                    }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                            selectedTab.value = screen
+                        },
+                        selectedContentColor = customCyan,
+                        unselectedContentColor = Color.Gray
+                    )
                 }
             }
         }
@@ -114,7 +118,8 @@ fun BottomBarNavigationGraph(
                     it.symptoms,
                     "Office Visit",
                     it.location,
-                    it.appointmentDate
+                    it.appointmentDate,
+                    it.notes
                 )
                 navController.navigate(Routes.APPOINTMENT_DETAILS_SCREEN)
             }
@@ -137,7 +142,6 @@ fun BottomBarNavigationGraph(
                     navController.popBackStack()
                 },
                 onScheduleAppointmentClicked = {
-                    mainActivityViewModel.showBottomNavBar.value = false
                     navController.navigate(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN)
                 }
             )
@@ -147,7 +151,6 @@ fun BottomBarNavigationGraph(
             ScheduleAppointmentFlowScreen(
                 onBack = {
                     navController.popBackStack()
-                    mainActivityViewModel.showBottomNavBar.value = true
                 },
                 onAppointmentScheduleClicked = {
                     navController.navigate(Routes.SCHEDULE_APPOINTMENT_SUCCESS_SCREEN)
@@ -160,12 +163,10 @@ fun BottomBarNavigationGraph(
                 onDoneClicked = {
                     navController.popBackStack(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN, inclusive = true)
                     navController.navigate(DashboardBottomNavScreen.Appointments.route)
-                    mainActivityViewModel.showBottomNavBar.value = true
+                    mainActivityViewModel.addedNotesState.value = ADD_NOTES_DEFAULT_TEXT
                 },
                 onViewDetailsClicked = {
-                    navController.popBackStack(Routes.SCHEDULE_APPOINTMENT_FLOW_SCREEN, inclusive = true)
-                    navController.navigate(DashboardBottomNavScreen.Appointments.route)
-                    mainActivityViewModel.showBottomNavBar.value = true
+                    navController.navigate(Routes.APPOINTMENT_DETAILS_SCREEN)
                 }
             )
         }

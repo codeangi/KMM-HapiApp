@@ -39,6 +39,10 @@ fun AppointmentReviewScreen(
 
     val appointmentSuccessState by appointmentViewModel.appointmentBookingSuccess
 
+    mainActivityViewModel.selectedAppointmentData.addedNotes?.let {
+        mainActivityViewModel.addedNotesState.value = it
+    }
+
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
             confirmStateChange = { false }
@@ -51,14 +55,6 @@ fun AppointmentReviewScreen(
     }
 
     val isLoading by appointmentViewModel.isApiLoading.collectAsState()
-
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-
-    DisposableEffect(key1 = lifecycle) {
-        onDispose {
-            mainActivityViewModel.addedNotesState.value = ADD_NOTES_DEFAULT_TEXT
-        }
-    }
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -136,7 +132,7 @@ fun AppointmentReviewScreen(
                 "Notes",
                 mainActivityViewModel.addedNotesState.value,
                 R.drawable.outline_note_24,
-                modifier = Modifier.clickable {
+                modifier = Modifier.clickable(isScheduleButtonRequired) {
                     coroutineScope.launch {
                         bottomSheetState.show()
                     }
@@ -216,6 +212,7 @@ fun AddNotesBottomSheetUi(
         Button(
             onClick = {
                 mainActivityViewModel.addedNotesState.value = addNotesText.value
+                mainActivityViewModel.selectedAppointmentData.addedNotes = addNotesText.value
                 onDoneClicked()
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)

@@ -1,6 +1,7 @@
 package com.deepak.myapplication.android.feature.appointments
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,20 +62,13 @@ fun LocationCardUi(locationData: LocationData, onClickOfLocation: (LocationData)
                     .fillMaxWidth()
                     .padding(horizontal = viewPort)
             ) {
-                Box(
+                Image(
+                    painter = painterResource(R.drawable.clinic),
+                    contentDescription = null,
                     modifier = Modifier
                         .size(64.dp)
-                        .background(customCyan, RoundedCornerShape(10))
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_add_home_work_24),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .align(Alignment.Center),
-                        tint = Color.White
-                    )
-                }
+                        .clip(RoundedCornerShape(10))
+                )
 
                 Spacer(modifier = Modifier.width(12.dp))
 

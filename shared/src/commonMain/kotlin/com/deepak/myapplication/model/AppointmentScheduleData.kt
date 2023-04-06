@@ -5,4 +5,5 @@ data class AppointmentScheduleData(
     val appointmentDate: String? = null,
     val doctorName: String? = null,
     val location: String? = null,
+    val notes: String? = null
 )
