@@ -27,6 +27,8 @@ struct ScheduledView: View {
             .background(Color.customCyan)
             .cornerRadius(10)
             Button("DONE") {
+                viewModel.isLoading = true
+                viewModel.fetchAppointments()
                 viewModel.clearReviewData()
                 viewModel.navigateToRoot()
             }

@@ -28,7 +28,7 @@ struct AppointmentScreen: View {
                             }
                             ForEach(viewModel.current, id: \.self) { appointment in
                                 VStack(alignment: .leading) {
-                                    AppointmentCell(appointment: appointment, isCurrent: true)
+                                    AppointmentCell(appointment: appointment)
                                         .onTapGesture {
                                             viewModel.didTapAppointment(appointment: appointment)
                                         }
@@ -44,7 +44,7 @@ struct AppointmentScreen: View {
                             
                             ForEach(viewModel.upcoming, id: \.self) { appointment in
                                 VStack(alignment: .leading) {
-                                    AppointmentCell(appointment: appointment, isCurrent: false)
+                                    AppointmentCell(appointment: appointment)
                                         .onTapGesture {
                                             viewModel.didTapAppointment(appointment: appointment)
                                         }
@@ -60,7 +60,7 @@ struct AppointmentScreen: View {
                             
                             ForEach(viewModel.past, id: \.self) { appointment in
                                 VStack(alignment: .leading) {
-                                    AppointmentCell(appointment: appointment, isCurrent: false)
+                                    AppointmentCell(appointment: appointment)
                                         .onTapGesture {
                                             viewModel.didTapAppointment(appointment: appointment)
                                         }
@@ -137,7 +137,6 @@ struct AppointmentScreen: View {
 struct AppointmentCell: View {
     
     @State var appointment: AppointmentScheduleData
-    @State var isCurrent: Bool
     
     var body: some View {
         VStack(alignment: .leading) {
