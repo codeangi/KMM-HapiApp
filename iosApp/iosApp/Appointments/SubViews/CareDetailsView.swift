@@ -37,8 +37,7 @@ struct CareDetailsView: View {
             .navigationBarHidden(true)
         }
         Button("SCHEDULE APPOINTMENT") {
-            viewModel.setReasons()
-            viewModel.selectedAppointmentData.doctorName = careDetails.doctorName
+            viewModel.selectedDoctorName = careDetails.doctorName ?? ""
             viewModel.appendScreen(screenType: .reason)
         }
         .padding()
@@ -79,16 +78,17 @@ struct TopView: View {
                     .frame(height: 250)
             }
             
-            Image("doctor")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 80, height: 80)
-                .cornerRadius(40)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 40)
-                        .stroke(Color.white, lineWidth: 3)
-                )
-                .offset(x: 40, y: 40)
+            VStack {
+                Image(systemName: "person")
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                    .foregroundColor(Color.black)
+            }
+            .frame(width: 40, height: 40)
+            .padding(10)
+            .background(Color.customCyan)
+            .cornerRadius(30)
+            .offset(x:40, y: 40)
         }
     }
 }
@@ -123,26 +123,28 @@ struct AboutView: View {
     @State var aboutExpanded: Bool = true
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Text("About")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                Spacer()
-                Image(systemName: aboutExpanded ? "chevron.down" : "chevron.up")
-                    .onTapGesture {
-                        aboutExpanded = !aboutExpanded
-                    }
+        if about != "" {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Text("About")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    Spacer()
+                    Image(systemName: aboutExpanded ? "chevron.down" : "chevron.up")
+                        .onTapGesture {
+                            aboutExpanded = !aboutExpanded
+                        }
+                }
+                if aboutExpanded {
+                    Text(about)
+                        .font(.headline)
+                        .fontWeight(.regular)
+                }
+                Divider()
+                    .padding(.top, 20)
             }
-            if aboutExpanded {
-                Text(about)
-                    .font(.headline)
-                    .fontWeight(.regular)
-            }
-            Divider()
-                .padding(.top, 20)
+            .padding(20)
         }
-        .padding(20)
     }
 }
 

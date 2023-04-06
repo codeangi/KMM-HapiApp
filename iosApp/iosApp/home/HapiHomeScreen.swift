@@ -14,46 +14,50 @@ struct HapiHomeScreen: View {
     @ObservedObject var viewModel: HapiHomeViewModel
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            VStack(alignment: .leading) {
-                NavBar()
-                    .environmentObject(viewModel)
-                Divider()
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(alignment: .leading) {
-                        Header()
-                        OptionCells()
-                            .environmentObject(viewModel)
-                        BookNowCard()
-                            .environmentObject(viewModel)
-                        Text("My Doctors")
-                            .foregroundColor(Color.gray)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .padding(.top, 20)
-                        DoctorsCells()
-                            .environmentObject(viewModel)
-                        Text("Clinics")
-                            .foregroundColor(Color.gray)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .padding(.top, 20)
-                        ClinicCells()
-                            .environmentObject(viewModel)
-                        Text("Medical Records")
-                            .foregroundColor(Color.gray)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .padding(.top, 20)
-                        MedicalRecordsCells()
-                            .environmentObject(viewModel)
+        if viewModel.isLoading {
+            ProgressView()
+        } else {
+            NavigationStack(path: $viewModel.path) {
+                VStack(alignment: .leading) {
+                    NavBar()
+                        .environmentObject(viewModel)
+                    Divider()
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(alignment: .leading) {
+                            Header()
+                            OptionCells()
+                                .environmentObject(viewModel)
+                            BookNowCard()
+                                .environmentObject(viewModel)
+                            Text("My Doctors")
+                                .foregroundColor(Color.gray)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.top, 20)
+                            DoctorsCells()
+                                .environmentObject(viewModel)
+                            Text("Clinics")
+                                .foregroundColor(Color.gray)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.top, 20)
+                            ClinicCells()
+                                .environmentObject(viewModel)
+                            Text("Medical Records")
+                                .foregroundColor(Color.gray)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.top, 20)
+                            MedicalRecordsCells()
+                                .environmentObject(viewModel)
+                        }
                     }
+                    Spacer()
                 }
-                Spacer()
-            }
-            .padding()
-            .navigationDestination(for: String.self) { title in
-                EmptyView(viewModel: EmptyViewModel(title: title))
+                .padding()
+                .navigationDestination(for: String.self) { title in
+                    EmptyView(viewModel: EmptyViewModel(title: title))
+                }
             }
         }
     }

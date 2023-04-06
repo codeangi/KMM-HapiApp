@@ -11,7 +11,7 @@ import Lottie
 
 struct ProgressBar: View {
     
-    @State var systemWidth = UIScreen.main.bounds.width
+    var systemWidth = UIScreen.main.bounds.width
     var currentProgress: CGFloat
     var totalProgress: CGFloat = 6.0
     
