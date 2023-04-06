@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.deepak.myapplication.AppConstant.ADD_NOTES_DEFAULT_TEXT
 import com.deepak.myapplication.android.MainActivityViewModel
 import com.deepak.myapplication.android.R
 import com.deepak.myapplication.android.theme.customCyan
@@ -55,7 +56,7 @@ fun AppointmentReviewScreen(
 
     DisposableEffect(key1 = lifecycle) {
         onDispose {
-            mainActivityViewModel.addedNotesState.value = "Add notes to share with your care team ahead of your visit."
+            mainActivityViewModel.addedNotesState.value = ADD_NOTES_DEFAULT_TEXT
         }
     }
 
@@ -152,7 +153,7 @@ fun AppointmentReviewScreen(
                                 BookingResource(
                                     it.id,
                                     it.resourceType,
-                                    mainActivityViewModel.addedNotesState.value,
+                                    if (mainActivityViewModel.addedNotesState.value == ADD_NOTES_DEFAULT_TEXT) "" else mainActivityViewModel.addedNotesState.value,
                                     ServiceType(
                                         Coding(
                                             code = "code",
@@ -160,7 +161,10 @@ fun AppointmentReviewScreen(
                                             display = mainActivityViewModel.selectedAppointmentData.reason
                                         )
                                     ),
-                                    contained = listOf(it)
+                                    it.participant,
+                                    it.slot,
+                                    it.start,
+                                    it.end
                                 )
                             )
                         }

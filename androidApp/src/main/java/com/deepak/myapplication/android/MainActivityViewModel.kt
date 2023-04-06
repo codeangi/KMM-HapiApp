@@ -2,6 +2,7 @@ package com.deepak.myapplication.android
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.deepak.myapplication.AppConstant.ADD_NOTES_DEFAULT_TEXT
 import com.deepak.myapplication.model.CareTeamData
 import com.deepak.myapplication.model.Resource
 import com.deepak.myapplication.model.SelectedAppointmentData
@@ -16,6 +17,6 @@ class MainActivityViewModel : ViewModel() {
 
     var responseDataForBooking: Resource? = null
 
-    var addedNotesState = mutableStateOf("Add notes to share with your care team ahead of your visit.")
+    var addedNotesState = mutableStateOf(ADD_NOTES_DEFAULT_TEXT)
 
 }

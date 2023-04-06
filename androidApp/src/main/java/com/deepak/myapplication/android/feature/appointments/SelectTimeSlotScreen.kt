@@ -21,6 +21,7 @@ import com.deepak.myapplication.android.theme.lightGrey
 import com.deepak.myapplication.android.viewPort
 import com.deepak.myapplication.model.Resource
 import com.deepak.myapplication.model.TimeSlotData
+import com.deepak.myapplication.model.TimeWithResponseData
 
 @Composable
 fun SelectTimeSlotScreen(
@@ -69,7 +70,7 @@ fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotDa
     Column {
         Spacer(modifier = Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-           Column {
+           Column(Modifier.width(40.dp)) {
                Text(text = timeSlotData.dayAndTimeMap?.first?.weekDay ?: "",  style = MaterialTheme.typography.body1, fontWeight = FontWeight.W600, color = Color.Black)
                Spacer(modifier = Modifier.height(4.dp))
                Text(text = timeSlotData.dayAndTimeMap?.first?.date ?: "",  style = MaterialTheme.typography.h6, color = Color.Black)
@@ -79,8 +80,8 @@ fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotDa
                 timeSlotData.dayAndTimeMap?.second?.toList()?.let {
                     items(it) { time ->
                         time.time?.let {
-                            TimeDataUi(it) { selectedTime ->
-                            onClickOfTimeSlot(timeSlotData, selectedTime, time.response)
+                            TimeDataUi(time) { selectedTime, response ->
+                            onClickOfTimeSlot(timeSlotData, selectedTime, response)
                         }
                         }
                     }
@@ -93,9 +94,11 @@ fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotDa
 }
 
 @Composable
-fun TimeDataUi(time: String, onTimeSlotClicked: (String) -> Unit) {
+fun TimeDataUi(time: TimeWithResponseData, onTimeSlotClicked: (String, Resource?) -> Unit) {
     Button(
-        onClick = { onTimeSlotClicked(time) },
+        onClick = {
+            onTimeSlotClicked(time.time ?: "", time.response)
+                  },
         modifier = Modifier
             .size(110.dp, 48.dp)
             .padding(end = 8.dp)
@@ -103,7 +106,7 @@ fun TimeDataUi(time: String, onTimeSlotClicked: (String) -> Unit) {
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
     ) {
         Text(
-            text = time,
+            text = time.time ?: "",
             modifier = Modifier.background(Color.Transparent),
             style = MaterialTheme.typography.body2,
             fontWeight = FontWeight.W600,
