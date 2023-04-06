@@ -22,49 +22,65 @@ struct CareTeamListView: View {
                 Text("My care team")
                     .font(.title3)
                     .fontWeight(.semibold)
-                List {
-                    ForEach(viewModel.careTeam, id: \.self) { careTeam in
-                        
-                        HStack {
-                            Image("doctor")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 60, height: 60)
+                if viewModel.isLoading {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                } else {
+                    List {
+                        ForEach(viewModel.careTeam, id: \.self) { careTeam in
+                            
+                            HStack(spacing: 20) {
+                                VStack {
+                                    Image(systemName: "person")
+                                        .resizable()
+                                        .frame(width: 30, height: 30)
+                                        .foregroundColor(Color.black)
+                                }
+                                .frame(width: 40, height: 40)
+                                .padding(10)
+                                .background(Color.customCyan)
                                 .cornerRadius(30)
-                                .padding(.trailing, 20)
-                                .foregroundColor(Color.customCyan)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(careTeam.doctorName ?? "")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                                Text(careTeam.designation ?? "")
-                                    .font(.subheadline)
-                                    .foregroundColor(.black.opacity(0.5))
-                                Text(careTeam.hospitalLocation ?? "")
-                                    .font(.subheadline)
-                                    .foregroundColor(.black.opacity(0.5))
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(careTeam.doctorName ?? "")
+                                        .font(.title3)
+                                        .fontWeight(.semibold)
+                                    Text(careTeam.designation ?? "")
+                                        .font(.subheadline)
+                                        .foregroundColor(.black.opacity(0.5))
+                                    Text(careTeam.hospitalLocation ?? "")
+                                        .font(.subheadline)
+                                        .foregroundColor(.black.opacity(0.5))
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(Color.black.opacity(0.6))
                             }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(Color.black.opacity(0.6))
-                        }
-                        
-                        .padding(.vertical, 10)
-                        .onTapGesture {
-                            viewModel.selectedPractitionerId = careTeam.practitionerId ?? ""
-                            viewModel.appendScreen(screenType: .careDetail(careData: careTeam))
+                            
+                            .padding(.vertical, 10)
+                            .onTapGesture {
+                                viewModel.selectedPractitionerId = careTeam.practitionerId ?? ""
+                                viewModel.appendScreen(screenType: .careDetail(careData: careTeam))
+                            }
                         }
                     }
+                    .padding(.vertical, 20)
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
                 }
-                .padding(.vertical, 20)
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(leading: navBarBackButton(viewModel: viewModel))
         }
         .padding()
+        .onAppear() {
+            viewModel.isLoading = true
+            viewModel.setCareTeam()
+        }
     }
 }
 

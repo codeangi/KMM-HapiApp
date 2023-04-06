@@ -27,6 +27,7 @@ struct ScheduledView: View {
             .background(Color.customCyan)
             .cornerRadius(10)
             Button("DONE") {
+                viewModel.clearReviewData()
                 viewModel.navigateToRoot()
             }
             .padding()

@@ -43,6 +43,7 @@ enum AppointmentScreens: Hashable {
 class AppointmentViewModel: ObservableObject {
     
     @Published var path = [AppointmentScreens]()
+    @Published var isLoading: Bool = true
     
     @Published var past = [AppointmentScheduleData]()
     @Published var upcoming = [AppointmentScheduleData]()
@@ -50,29 +51,28 @@ class AppointmentViewModel: ObservableObject {
     @Published var careTeam = [CareTeamData]()
     @Published var reasons = [String]()
     @Published var types = [TypeModel]()
-    @Published var dateTime = [SlotModel]()
+    @Published var dateTime = [TimeSlotData]()
     @Published var screenWidth = UIScreen.main.bounds.width
     @Published var selectedPractitionerId = ""
+    @Published var monthSlotData = [TimeSlotData]()
+    
+    @Published var selectedReason: String = ""
+    @Published var selectedDoctorName: String = ""
+    @Published var selectedLocation: String = ""
+    @Published var selectedDateString: String = ""
     @Published var note: String = ""
-    @Published var selectedAppointmentData: SelectedAppointmentData = SelectedAppointmentData(doctorName: "", reason: "", appointmentType: "", appointmentLocationAddress: "", timeSlotData: "")
-    
+    @Published var selectedResource: Resource?
+        
     private var appointmentUseCase = KMPAppointmentUseCaseHelper().appointmentUseCase
-
-    init() {
-        setPastAppointments()
-        setUpcomingAppointments()
-        setCurrentAppointments()
-    }
     
-    func setPastAppointments() {
-        appointmentUseCase.getPatientPastAppointments { appRequest, error in
+    func fetchAppointments() {
+        
+        appointmentUseCase.getPatientTodaysAppointments { appRequest, error in
             guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<AppointmentScheduleData> else { return }
             guard let result = request.result as? [AppointmentScheduleData] else { return }
             
-            self.past = result
+            self.current = result
         }
-    }
-    func setUpcomingAppointments() {
         
         appointmentUseCase.getPatientFutureAppointments { appRequest, error in
             guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<AppointmentScheduleData> else { return }
@@ -80,14 +80,16 @@ class AppointmentViewModel: ObservableObject {
             
             self.upcoming = result
         }
-    }
-    func setCurrentAppointments() {
         
-        appointmentUseCase.getPatientTodaysAppointments { appRequest, error in
+        appointmentUseCase.getPatientPastAppointments { appRequest, error in
             guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<AppointmentScheduleData> else { return }
             guard let result = request.result as? [AppointmentScheduleData] else { return }
             
-            self.current = result
+            self.past = result
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
         }
     }
     
@@ -98,48 +100,52 @@ class AppointmentViewModel: ObservableObject {
             guard let result = request.result as? [CareTeamData] else { return }
             
             self.careTeam = result
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
         }
     }
     
     func setReasons() {
         reasons = ["Back pain", "Headache", "Migraine"]
+        
+        DispatchQueue.main.async {
+            self.isLoading = false
+        }
     }
     
     func setTypes() {
         let t1 = TypeModel(typeIcon: "building", typeName: "Office Visit")
         let t2 = TypeModel(typeIcon: "video", typeName: "Video Visit")
         types = [t1, t2]
+        
+        DispatchQueue.main.async {
+            self.isLoading = false
+        }
     }
     
     func setDateTime() {
+        monthSlotData = []
         appointmentUseCase.getAppointmentSlots(practitionerId: selectedPractitionerId) { appRequest, error in
             guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<TimeSlotData> else { return }
             guard let result = request.result as? [TimeSlotData] else { return }
             
-            var month: String = ""
-            var year: String = ""
-            var timeSlotDataArray: [TimeSlotData] = []
-            var finalArray: [SlotModel] = []
-            
-            for data in result {
-                if month == "" && year == "" {
-                    month = data.month ?? ""
-                    year = data.year ?? ""
-                    timeSlotDataArray.append(data)
-                } else if month == data.month && year == data.year {
-                    timeSlotDataArray.append(data)
+            var monthYear: String = ""
+            for timeSlotData in result {
+                let monthYearString = "\(timeSlotData.month ?? "") \(timeSlotData.year ?? "")"
+                if monthYear != monthYearString {
+                    self.monthSlotData.append(timeSlotData)
+                    monthYear = monthYearString
                 } else {
-                    let slotModel = SlotModel(month: month, year: year, slotData: timeSlotDataArray)
-                    finalArray.append(slotModel)
-                    month = data.month ?? ""
-                    year = data.year ?? ""
-                    timeSlotDataArray = []
-                    timeSlotDataArray.append(data)
+                    
                 }
             }
-            let slotModel = SlotModel(month: month, year: year, slotData: timeSlotDataArray)
-            finalArray.append(slotModel)
-            self.dateTime = finalArray
+            self.dateTime = result
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
         }
     }
     
@@ -156,14 +162,41 @@ class AppointmentViewModel: ObservableObject {
     }
     
     func didTapAppointment(appointment: AppointmentScheduleData) {
-        selectedAppointmentData.reason = appointment.symptoms
-        selectedAppointmentData.doctorName = appointment.doctorName
-        selectedAppointmentData.appointmentLocationAddress = appointment.location
-        selectedAppointmentData.timeSlotData = appointment.appointmentDate
+        selectedDoctorName = appointment.doctorName ?? ""
+        selectedReason = appointment.symptoms ?? ""
+        selectedLocation = appointment.location ?? ""
+        selectedDateString = appointment.appointmentDate ?? ""
         appendScreen(screenType: .review(isProgressNeeded: false))
+    }
+    
+    func clearReviewData() {
+        selectedDoctorName = ""
+        selectedReason = ""
+        selectedLocation = ""
+        selectedDateString = ""
+        note = ""
     }
     
     func getCareTeamData() -> CareTeamData {
         return careTeam.first(where: { $0.practitionerId == selectedPractitionerId }) ?? careTeam[0]
+    }
+    
+    func getNoteValue(isProgressNeeded: Bool) -> String {
+        if note == "" {
+            return isProgressNeeded ? "Add notes to share with your care team ahead of your visit" : "No Notes Added"
+        }
+        return self.note
+    }
+    
+    func scheduleAppointment() {
+        let serviceType = ServiceType(coding: Coding(system: nil, code: "code", display: selectedReason))
+        guard let selectedResource = selectedResource else { return }
+        let bookingResource = BookingResource(id: selectedResource.id, resourceType: selectedResource.resourceType, comment: note, serviceType: serviceType, contained: [selectedResource])
+        
+        appointmentUseCase.bookAppointment(resource: bookingResource) { appRequest, error in
+            guard let appRequest = appRequest, let _ = appRequest as? AppRequestResult<Resource> else { return }
+            self.isLoading = false
+            self.appendScreen(screenType: .scheduled)
+        }
     }
 }

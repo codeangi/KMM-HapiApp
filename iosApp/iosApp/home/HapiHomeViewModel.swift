@@ -16,6 +16,7 @@ class HapiHomeViewModel: ObservableObject {
     @Published var clinics: [ClinicData] = []
     @Published var medicalRecords: [String] = []
     @Published var emptyScreenTitle: String = ""
+    @Published var isLoading: Bool = true
     
     private var homeUseCase = KMPHomeUseCaseHelper().homeUseCase
     
@@ -29,8 +30,11 @@ class HapiHomeViewModel: ObservableObject {
     
     func accessToken() {
         homeUseCase.getAccessToken { appRequest, error in
-            guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<DoctorData> else { return }
-            guard let result = request.result as? [DoctorData] else { return }
+            guard let appRequest = appRequest, let request = appRequest as? AppRequestResult<AccessTokenData> else { return }
+            guard request.result != nil else { return }
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
         }
     }
     

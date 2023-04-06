@@ -31,8 +31,7 @@ struct ReasonView: View {
                                         .foregroundColor(Color.black.opacity(0.6))
                                 }
                                 .onTapGesture {
-                                    viewModel.setTypes()
-                                    viewModel.selectedAppointmentData.reason = reason
+                                    viewModel.selectedReason = reason
                                     viewModel.appendScreen(screenType: .type)
                                 }
                         }
@@ -41,6 +40,10 @@ struct ReasonView: View {
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
                 }
+            }
+            .onAppear() {
+                viewModel.isLoading = true
+                viewModel.setReasons()
             }
             .navigationTitle("Schedule Appointment")
             .navigationBarTitleDisplayMode(.inline)
