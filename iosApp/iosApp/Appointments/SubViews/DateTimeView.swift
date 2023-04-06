@@ -40,28 +40,32 @@ struct DateTimeCard: View {
         ScrollView(showsIndicators: false) {
             Divider()
             ForEach(viewModel.dateTime, id: \.self) { months in
-                Text("\(months.month) \(months.year)")
+                let monthYear = "\(months.month) \(months.year)"
+                Text(monthYear)
                     .font(.title)
                     .fontWeight(.semibold)
                     .padding(.vertical)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Divider()
-                ForEach(months.dayAndTimeMap, id: \.self) { dates in
+                ForEach(months.slotData, id: \.self) { slotData in
                     HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(dates.weekDay.prefix(3).uppercased())
+                        VStack(alignment: .center, spacing: 5) {
+                            let weekDay = slotData.dayAndTimeMap?.first?.weekDay
+                            let weekDate = slotData.dayAndTimeMap?.first?.date
+                            Text(weekDay ?? "")
                                 .font(.headline)
                                 .fontWeight(.semibold)
-                            Text(dates.weekDate)
+                            Text(weekDate ?? "")
                                 .font(.title2)
                                 .fontWeight(.bold)
                         }
                         .frame(width: 50, alignment: .leading)
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(dates.time, id: \.self) { time in
+                            HStack(alignment: .center) {
+                                let timeArray = slotData.dayAndTimeMap?.second as? [String]
+                                ForEach(timeArray ?? [], id: \.self) { timeData in
                                     VStack {
-                                        Text(time)
+                                        Text(timeData)
                                             .foregroundColor(Color.customCyan)
                                             .fontWeight(.bold)
                                     }
@@ -69,10 +73,9 @@ struct DateTimeCard: View {
                                     .background(Color.lightGrey.opacity(0.6))
                                     .cornerRadius(10)
                                     .onTapGesture {
-                                        let slotData = "\(dates.weekDay), \(months.month) \(dates.weekDate) at \(time)"
-                                        viewModel.selectedAppointmentData.timeSlotData = slotData
                                         viewModel.appendScreen(screenType: .review(isProgressNeeded: true))
                                     }
+                                    
                                 }
                             }
                         }
@@ -85,10 +88,10 @@ struct DateTimeCard: View {
     }
 }
 
-    struct DateTimeView_Previews: PreviewProvider {
-        static var previews: some View {
-            NavigationStack {
-                DateTimeView().environmentObject(AppointmentViewModel())
-            }
+struct DateTimeView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            DateTimeView().environmentObject(AppointmentViewModel())
         }
     }
+}
