@@ -166,6 +166,8 @@ class AppointmentViewModel: ObservableObject {
         selectedReason = appointment.symptoms ?? ""
         selectedLocation = appointment.location ?? ""
         selectedDateString = appointment.appointmentDate ?? ""
+        note = appointment.notes ?? ""
+        
         appendScreen(screenType: .review(isProgressNeeded: false))
     }
     
