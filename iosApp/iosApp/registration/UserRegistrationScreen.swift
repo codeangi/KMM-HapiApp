@@ -35,7 +35,8 @@ struct UserRegistrationScreen: View {
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
-            
+                .keyboardType(.emailAddress)
+                .autocapitalization(.none)
             
             SecureField("Password", text: $viewModel.password)
                 .padding()

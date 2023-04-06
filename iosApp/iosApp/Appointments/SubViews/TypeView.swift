@@ -33,7 +33,6 @@ struct TypeView: View {
                                 .foregroundColor(Color.black.opacity(0.6))
                         }
                         .onTapGesture {
-                            viewModel.selectedAppointmentData.appointmentType = type.typeName
                             viewModel.path.append(AppointmentScreens.location)
                         }
                     }
@@ -42,6 +41,10 @@ struct TypeView: View {
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
             }
+        }
+        .onAppear() {
+            viewModel.isLoading = true
+            viewModel.setTypes()
         }
         .navigationTitle("Schedule Appointment")
         .navigationBarTitleDisplayMode(.inline)

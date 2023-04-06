@@ -75,8 +75,7 @@ struct LocationCard: View {
                 .stroke(Color.lightGrey.opacity(0.9), lineWidth: 1)
         )
         .onTapGesture {
-            viewModel.setDateTime()
-            viewModel.selectedAppointmentData.appointmentLocationAddress = (careDetails.hospitalLocation ?? "") + (careDetails.locationAddress ?? "")
+            viewModel.selectedLocation = (careDetails.hospitalLocation ?? "") + (careDetails.locationAddress ?? "")
             viewModel.appendScreen(screenType: .dateTime)
         }
     }

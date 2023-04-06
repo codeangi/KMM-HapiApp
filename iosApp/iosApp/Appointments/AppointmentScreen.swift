@@ -15,108 +15,121 @@ struct AppointmentScreen: View {
     
     var body: some View {
         NavigationStack(path: $viewModel.path) {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    if !viewModel.current.isEmpty {
-                        Text("Today")
-                            .font(.title)
-                            .fontWeight(.bold)
-                    }
-                    ForEach(viewModel.current, id: \.self) { appointment in
+            VStack {
+                if viewModel.isLoading {
+                    ProgressView()
+                } else {
+                    ScrollView {
                         VStack(alignment: .leading) {
-                            AppointmentCell(appointment: appointment, isCurrent: true)
-                                .onTapGesture {
-                                    viewModel.didTapAppointment(appointment: appointment)
+                            if !viewModel.current.isEmpty {
+                                Text("Today")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                            }
+                            ForEach(viewModel.current, id: \.self) { appointment in
+                                VStack(alignment: .leading) {
+                                    AppointmentCell(appointment: appointment, isCurrent: true)
+                                        .onTapGesture {
+                                            viewModel.didTapAppointment(appointment: appointment)
+                                        }
                                 }
-                        }
-                        .padding(.bottom, 20)
-                    }
-                    
-                    if !viewModel.upcoming.isEmpty {
-                        Text("Upcoming")
-                            .font(.title)
-                            .fontWeight(.bold)
-                    }
-                    
-                    ForEach(viewModel.upcoming, id: \.self) { appointment in
-                        VStack(alignment: .leading) {
-                            AppointmentCell(appointment: appointment, isCurrent: false)
-                                .onTapGesture {
-                                    viewModel.didTapAppointment(appointment: appointment)
+                                .padding(.bottom, 20)
+                            }
+                            
+                            if !viewModel.upcoming.isEmpty {
+                                Text("Upcoming")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                            }
+                            
+                            ForEach(viewModel.upcoming, id: \.self) { appointment in
+                                VStack(alignment: .leading) {
+                                    AppointmentCell(appointment: appointment, isCurrent: false)
+                                        .onTapGesture {
+                                            viewModel.didTapAppointment(appointment: appointment)
+                                        }
                                 }
-                        }
-                        .padding(.bottom, 20)
-                    }
-                    
-                    if !viewModel.past.isEmpty {
-                        Text("Past")
-                            .font(.title)
-                            .fontWeight(.bold)
-                    }
-                    
-                    ForEach(viewModel.past, id: \.self) { appointment in
-                        VStack(alignment: .leading) {
-                            AppointmentCell(appointment: appointment, isCurrent: false)
-                                .onTapGesture {
-                                    viewModel.didTapAppointment(appointment: appointment)
+                                .padding(.bottom, 20)
+                            }
+                            
+                            if !viewModel.past.isEmpty {
+                                Text("Past")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                            }
+                            
+                            ForEach(viewModel.past, id: \.self) { appointment in
+                                VStack(alignment: .leading) {
+                                    AppointmentCell(appointment: appointment, isCurrent: false)
+                                        .onTapGesture {
+                                            viewModel.didTapAppointment(appointment: appointment)
+                                        }
                                 }
+                                .padding(.bottom, 20)
+                            }
                         }
-                        .padding(.bottom, 20)
-                    }
-                }
-                .padding(20)
-                .navigationTitle("Appointments")
-                .toolbar {
-                    Button(action: {
-                        viewModel.setCareTeam()
-                        viewModel.appendScreen(screenType: .careTeam)
+                        .padding(20)
                         
-                    }, label: {
-                        Image(systemName: "plus")
-                            .resizable()
-                            .frame(width: 15, height: 15)
-                        Text("ADD")
-                            .font(.body)
-                            .fontWeight(.bold)
-                            .padding(.leading, 5)
-                    })
-                    .padding(5)
-                    .padding(.horizontal, 5)
-                    .foregroundColor(.white)
-                    .background(Color.customCyan)
-                    .cornerRadius(30)
-                }
-                .navigationDestination(for: AppointmentScreens.self) { screen in
-                    switch screen {
-                    case .careTeam:
-                        CareTeamListView()
-                            .environmentObject(viewModel)
-                    case .careDetail(let careDetails):
-                        CareDetailsView(careDetails: careDetails)
-                            .environmentObject(viewModel)
-                    case .reason:
-                        ReasonView()
-                            .environmentObject(viewModel)
-                    case .type:
-                        TypeView()
-                            .environmentObject(viewModel)
-                    case .location:
-                        LocationsView()
-                            .environmentObject(viewModel)
-                    case .dateTime:
-                        DateTimeView()
-                            .environmentObject(viewModel)
-                    case .review(let isProgressNeeded):
-                        ReviewView(isProgressNeeded: isProgressNeeded)
-                            .environmentObject(viewModel)
-                    case .scheduled:
-                        ScheduledView()
-                            .environmentObject(viewModel)
-                    default:
-                        EmptyView(viewModel: EmptyViewModel(title: "Empty"))
                     }
+                    
                 }
             }
+            
+            .navigationTitle("Appointments")
+            .toolbar {
+                Button(action: {
+                    viewModel.appendScreen(screenType: .careTeam)
+                    
+                }, label: {
+                    Image(systemName: "plus")
+                        .resizable()
+                        .frame(width: 15, height: 15)
+                    Text("ADD")
+                        .font(.body)
+                        .fontWeight(.bold)
+                        .padding(.leading, 5)
+                })
+                .padding(5)
+                .padding(.horizontal, 5)
+                .foregroundColor(.white)
+                .background(Color.customCyan)
+                .cornerRadius(30)
+            }
+            .navigationDestination(for: AppointmentScreens.self) { screen in
+                switch screen {
+                case .careTeam:
+                    CareTeamListView()
+                        .environmentObject(viewModel)
+                case .careDetail(let careDetails):
+                    CareDetailsView(careDetails: careDetails)
+                        .environmentObject(viewModel)
+                case .reason:
+                    ReasonView()
+                        .environmentObject(viewModel)
+                case .type:
+                    TypeView()
+                        .environmentObject(viewModel)
+                case .location:
+                    LocationsView()
+                        .environmentObject(viewModel)
+                case .dateTime:
+                    DateTimeView()
+                        .environmentObject(viewModel)
+                case .review(let isProgressNeeded):
+                    ReviewView(isProgressNeeded: isProgressNeeded)
+                        .environmentObject(viewModel)
+                case .scheduled:
+                    ScheduledView()
+                        .environmentObject(viewModel)
+                default:
+                    EmptyView(viewModel: EmptyViewModel(title: "Empty"))
+                }
+            }
+        }
+        .onAppear() {
+            viewModel.isLoading = true
+            viewModel.clearReviewData()
+            viewModel.fetchAppointments()
         }
     }
 }
