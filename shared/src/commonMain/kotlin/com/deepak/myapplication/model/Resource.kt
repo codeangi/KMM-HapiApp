@@ -4,8 +4,8 @@ package com.deepak.myapplication.model
 data class Resource(
     val resourceType: String,
     val id: String,
-    val comment: String?,
-    val serviceType: ServiceType?,
+    val comment:String?,
+    val serviceType: List<Coding>?,
     val schedule: Schedule?,
     val contained: List<Resource>?,
     val qualification: List<Qualification>?,
@@ -18,7 +18,6 @@ data class Resource(
     val name: String?,
     val type: List<Type>?,
     val telecom: List<Telecom>?,
-
     val start: String?,
     val end: String?,
     val slot: List<Slot>?,
@@ -27,6 +26,15 @@ data class Resource(
     val encounter: Encounter?,
     val participant: List<Participant>?,
     val reasonCode: List<ReasonCode>?
+)
+
+@kotlinx.serialization.Serializable
+data class BookingResource(
+    val id: String,
+    val resourceType: String,
+    val comment:String?,
+    val serviceType: ServiceType,
+    val contained: List<Resource>?
 )
 
 @kotlinx.serialization.Serializable

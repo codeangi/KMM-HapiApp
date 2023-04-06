@@ -15,6 +15,7 @@ class AppointmentDataMapper {
         const val PRACTITIONER_RESIDENCY = "practitioner-residency"
         const val RESOURCE_CARE_TEAM = "CareTeam"
         const val RESOURCE_ORGANIZATION = "Organization"
+        const val RESOURCE_LOCATION = "Location"
         const val RESOURCE_PRACTITIONER = "Practitioner"
         const val PRACTITIONER_ABOUT = "practitioner-about"
     }
@@ -23,15 +24,15 @@ class AppointmentDataMapper {
         val dataList = mutableListOf<AppointmentScheduleData>()
         if (appointmentsResponse is AppRequest.Result<*> && appointmentsResponse.result is AppointmentResp) {
             appointmentsResponse.result.let { response ->
-                response.entry?.forEach { entry ->
+                response.entry?.sortedBy { it.resource.start }?.forEach { entry ->
                     var appointmentDate = ""
                     entry.resource.start?.let {
                         val localTimeDate =
                             Instant.parse(entry.resource.start.substring(0, 19) + "Z")
                                 .toLocalDateTime(TimeZone.currentSystemDefault())
-                        val month = localTimeDate.month.name.substring(0, 3).lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-                        val dateOfMonth = localTimeDate.dayOfMonth.toString().lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-                        val dayOfWeek = localTimeDate.dayOfWeek.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        val month = localTimeDate.month.name.substring(0, 3).toCamelCase()
+                        val dateOfMonth = localTimeDate.dayOfMonth.toString().toCamelCase()
+                        val dayOfWeek = localTimeDate.dayOfWeek.name.toCamelCase()
                         val time =
                             "${localTimeDate.time.hour % 12}:${localTimeDate.time.minute} ${if (localTimeDate.time.hour % 12 == 0) "AM" else "PM"}"
 
@@ -40,10 +41,10 @@ class AppointmentDataMapper {
                             if (localTimeDate.date == Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date) {
                                 dataList.add(
                                     AppointmentScheduleData(
-                                        entry.resource.reasonCode?.firstOrNull()?.coding?.firstOrNull()?.display,
+                                        entry.resource.serviceType?.firstOrNull()?.display,
                                         appointmentDate,
-                                        "Dr. Leslie Crona, RN",
-                                        "Measured Wellness Llc"
+                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_PRACTITIONER) == true}?.actor?.display,
+                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_LOCATION) == true}?.actor?.display,
                                     )
                                 )
                             }
@@ -55,8 +56,8 @@ class AppointmentDataMapper {
                                     AppointmentScheduleData(
                                         entry.resource.reasonCode?.firstOrNull()?.coding?.firstOrNull()?.display,
                                         appointmentDate,
-                                        "Dr. Leslie Crona, RN",
-                                        "Measured Wellness Llc"
+                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_PRACTITIONER) == true}?.actor?.display.toCamelCase(),
+                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_LOCATION) == true}?.actor?.display.toCamelCase(),
                                     )
                                 )
                             }
@@ -99,15 +100,15 @@ class AppointmentDataMapper {
                                 image = it.resource.photo?.firstOrNull()?.url,
                                 practitionerId = it.resource.id,
                                 designation = it.resource.qualification?.firstOrNull()?.code?.text,
-                                hospitalLocation = organizationData?.member?.display,
+                                hospitalLocation = organizationData?.member?.display?.toCamelCase(),
                                 doctorDescription = it.resource.extension?.find { it.url?.contains(PRACTITIONER_ABOUT) == true }?.valueString,
-                                gender = it.resource.gender?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() },
+                                gender = it.resource.gender?.toCamelCase(),
                                 languages = it.resource.communication?.firstOrNull()?.text,
                                 yearsOfPractice = getYearsOfPractice(it),
                                 boardCertification = it.resource.qualification?.firstOrNull()?.code?.text,
                                 groupAffiliations = "0 PLACE",
                                 hospitalAffiliations = "0 HOSPITAL",
-                                medicalSchool = it.resource.extension?.find { it.url?.contains(PRACTITIONER_EDUCATION) == true }?.valueString?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() },
+                                medicalSchool = it.resource.extension?.find { it.url?.contains(PRACTITIONER_EDUCATION) == true }?.valueString?.toCamelCase(),
                                 residency = it.resource.extension?.find { it.url?.contains(PRACTITIONER_RESIDENCY) == true }?.valueString,
                                 locationAddress = getAddress(response.entry.filter { it.resource.resourceType == RESOURCE_ORGANIZATION }, organizationData?.member?.reference)
                             )
@@ -133,16 +134,16 @@ class AppointmentDataMapper {
         reference?.let {ref ->
             val orgAddressObj = address.firstOrNull { it.fullUrl.contains(ref) }?.resource?.address?.firstOrNull()
             orgAddressObj?.let {
-                orgAddress = "${it.line?.joinToString { " " }} ${it.city}, ${it.state} ${it.postalCode}"
+                orgAddress = "${it.line?.joinToString { " " }.toCamelCase()} ${it.city.toCamelCase()}, ${it.state} ${it.postalCode}"
             }
         }
-        return orgAddress.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        return orgAddress
     }
 
     fun getAppointmentsTimeSlot(timeSlotResponse: AppRequest): AppRequest {
         val dataList = mutableListOf<TimeSlotData>()
-        val dateMap = linkedMapOf<DateData, List<String>>()
-        val dateList = mutableListOf<String>()
+        val dateMap = linkedMapOf<DateData, List<TimeWithResponseData>>()
+        val dateList = mutableListOf<TimeWithResponseData>()
 
         if (timeSlotResponse is AppRequest.Result<*> && timeSlotResponse.result is AppointmentResp) {
             timeSlotResponse.result.entry?.forEach {
@@ -152,30 +153,37 @@ class AppointmentDataMapper {
                     val dateOfMonth = localTimeDate.dayOfMonth.toString()
                     val dayOfWeek = localTimeDate.dayOfWeek.name.subSequence(0,3).toString().uppercase()
                     val time = "${localTimeDate.time.hour % 12}:${localTimeDate.time.minute} ${if (localTimeDate.time.hour % 12 == 0) "AM" else "PM"}"
-                    dateList.add(time)
+                    dateList.add(TimeWithResponseData(time, it.resource))
                     dateMap[DateData(dayOfWeek, dateOfMonth, month, localTimeDate.year.toString())] = dateList
                 }
             }
+            var prevMonth = ""
             dateMap.forEach {
                 dataList.add(
                     TimeSlotData(
                         month = it.key.month,
                         year = it.key.year,
+                        showMonth = prevMonth != it.key.month,
                         dayAndTimeMap = Pair(
                             it.key,
-                            it.value.distinct().sortedWith { s1, s2 ->
+                            it.value.distinctBy { it.time }.sortedWith { s1, s2 ->
                                 when {
-                                    s1.length != s2.length -> s1.length - s2.length
-                                    else -> s1.compareTo(s2)
+                                    s1.time?.length != s2.time?.length -> s1.time?.length?.minus(s2.time?.length ?: 0) ?: 0
+                                    else -> (s1.time ?: "" ).compareTo(s2.time ?: "")
                                 }
                             }.toMutableList()
                         )
                     )
                 )
+                prevMonth = it.key.month ?: ""
             }
         }
-        val sortedList = dataList.toList() // Convert to a list of key-value pairs
-            .sortedWith(compareBy({ it.dayAndTimeMap?.first?.month }, { it.dayAndTimeMap?.first?.date?.toInt() })) // Sort by year and then by month
+        val sortedList = dataList
+            .sortedWith(compareBy({ it.dayAndTimeMap?.first?.month }, { it.dayAndTimeMap?.first?.date?.toInt() }))
         return AppRequest.ListResult(sortedList)
+    }
+
+    private fun String?.toCamelCase(): String? {
+        return this?.lowercase()?.split(" ")?.joinToString(" ") { it.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } }
     }
 }

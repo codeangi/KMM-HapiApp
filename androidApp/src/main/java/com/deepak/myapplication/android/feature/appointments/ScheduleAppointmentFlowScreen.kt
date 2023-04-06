@@ -3,6 +3,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -10,6 +12,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.deepak.myapplication.android.MainActivityViewModel
 import com.deepak.myapplication.android.R
 import com.deepak.myapplication.android.theme.customCyan
@@ -28,6 +31,9 @@ fun ScheduleAppointmentFlowScreen(onBack: () -> Unit, onAppointmentScheduleClick
     val appointmentViewModel: AppointmentViewModel = koinViewModel()
 
     val mainActivityViewModel: MainActivityViewModel = koinViewModel()
+
+    val isLoading by appointmentViewModel.isApiLoading.collectAsState()
+
 
 
     Scaffold(
@@ -49,6 +55,18 @@ fun ScheduleAppointmentFlowScreen(onBack: () -> Unit, onAppointmentScheduleClick
     ) {
         val modifier = Modifier.padding(it)
         Box(modifier = modifier) {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                    Modifier.size(48.dp)
+                        .align(Center),
+                    color = Color.Black
+                )
+                }
+            }
             // Create the content for each step
             when (currentStep.value) {
                 0 -> {
@@ -77,15 +95,16 @@ fun ScheduleAppointmentFlowScreen(onBack: () -> Unit, onAppointmentScheduleClick
                     SelectTimeSlotScreen(
                         appointmentViewModel,
                         mainActivityViewModel
-                    ) { timeSlotData, selectedTime ->
+                    ) { timeSlotData, selectedTime, resource ->
                         mainActivityViewModel.selectedAppointmentData.timeSlotData = getSelectedTimeData(timeSlotData, selectedTime)
+                        mainActivityViewModel.responseDataForBooking = resource
                         currentStep.value++
                     }
                 }
                 4 -> {
-                    AppointmentReviewScreen(mainActivityViewModel) {
+                    AppointmentReviewScreen(mainActivityViewModel, appointmentViewModel, onScheduleAppointmentClick = {
                         onAppointmentScheduleClicked()
-                    }
+                    }) {}
                 }
             }
         }

@@ -103,13 +103,15 @@ fun CareTeamDoctorDetailsScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(text = "About", style = MaterialTheme.typography.body1, color = Color.Black, fontWeight = FontWeight.W700, modifier = Modifier.padding(horizontal = viewPort))
+                selectedCareDoctor?.doctorDescription?.let {
+                    Text(text = "About", style = MaterialTheme.typography.body1, color = Color.Black, fontWeight = FontWeight.W700, modifier = Modifier.padding(horizontal = viewPort))
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                Text(text = selectedCareDoctor?.doctorDescription ?: "", style = MaterialTheme.typography.body1, color = Color.Black, modifier = Modifier.padding(horizontal = viewPort))
+                    Text(text =  it, style = MaterialTheme.typography.body1, color = Color.Black, modifier = Modifier.padding(horizontal = viewPort))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 GeneralInformationSectionUi(selectedCareDoctor)
 

@@ -1,13 +1,11 @@
 package com.deepak.myapplication.android.feature.home
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deepak.myapplication.infra.AppRequest
-import com.deepak.myapplication.model.AppointmentResp
-import com.deepak.myapplication.model.ClinicData
-import com.deepak.myapplication.model.DoctorData
-import com.deepak.myapplication.model.PatientDataResp
+import com.deepak.myapplication.model.*
 import com.deepak.myapplication.usecase.AppointmentUseCase
 import com.deepak.myapplication.usecase.HomeUseCase
 import com.deepak.myapplication.usecase.KMPPractitionerUseCase
@@ -31,8 +29,10 @@ class HomeViewModel constructor(
 
     var doctorDataUiState = MutableStateFlow(listOf(DoctorData()))
     var clinicDataUiState = MutableStateFlow(listOf(ClinicData()))
+    var isApiLoading = MutableStateFlow(false)
 
     init {
+        isApiLoading.value = true
         getClinicData()
         getDoctorsData()
         viewModelScope.launch(Dispatchers.IO) {
@@ -70,8 +70,22 @@ class HomeViewModel constructor(
             if (appointSlots is AppRequest.Result<*> && appointSlots.result is AppointmentResp) {
                 val entry = (appointSlots.result as AppointmentResp).entry?.last()
                 entry?.resource?.let {
-                    val resp = homeUseCase.bookAppointment(it)
-                    Log.d("HomeViewModel", "Booking appointment resp:$resp")
+                   val resp =  homeUseCase.bookAppointment(
+                       BookingResource(
+                           it.id,
+                           it.resourceType,
+                           "Add comments",
+                           ServiceType(
+                               Coding(
+                                   code = "code",
+                                   system = null,
+                                   display = "reason"
+                               )
+                           ),
+                           contained = listOf(it)
+                       )
+                   )
+                    Log.d("HomeViewModel","Booking appointment resp:$resp")
                 }
             }
             val latitude = "42.2386109797091"
@@ -86,12 +100,13 @@ class HomeViewModel constructor(
         }
     }
 
-    private fun getDoctorsData() {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun getDoctorsData() {
+        viewModelScope.launch {
             val data = homeUseCase.getDoctorsData()
             if (data is AppRequest.ListResult<*> && data.result.firstOrNull() is DoctorData) {
                 data.result.let {
                     doctorDataUiState.value = data.result.filterIsInstance<DoctorData>()
+                    isApiLoading.value = false
                 }
             }
         }
@@ -104,6 +119,7 @@ class HomeViewModel constructor(
                 data.result.let {
                     clinicDataUiState.value = data.result.filterIsInstance<ClinicData>()
                         .takeIf { it.size == data.result.size } ?: emptyList()
+                    isApiLoading.value = false
                 }
             }
         }

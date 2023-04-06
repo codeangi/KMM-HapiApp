@@ -49,7 +49,7 @@ val commonModule = module {
     factory<PatientRepository> { PatientRepositoryImpl(get(), get()) }
 
     //Appointment
-    factory { AppointmentUseCase(get(), get(), get(), get()) }
+    factory { AppointmentUseCase(get(), get(), get(), get(), get()) }
     factory { AppointmentDataMapper() }
 
     //Practitioner

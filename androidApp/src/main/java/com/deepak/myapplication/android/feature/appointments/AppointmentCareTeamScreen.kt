@@ -9,7 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
@@ -34,6 +37,8 @@ fun AppointmentCareTeamScreen(onBack: () -> Boolean, onDoctorCardClick: (CareTea
     LaunchedEffect(key1 = lifecycle, block = {
         viewModel.getMyCareTeamData()
     })
+    val isLoading by viewModel.isApiLoading.collectAsState()
+
     Scaffold(modifier = Modifier.fillMaxSize(),
     topBar = {
         AppBarOnlyBackButton {
@@ -41,6 +46,18 @@ fun AppointmentCareTeamScreen(onBack: () -> Boolean, onDoctorCardClick: (CareTea
         }
     }) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                    Modifier.size(48.dp)
+                        .align(Center),
+                    color = Color.Black
+                )
+                }
+            }
             Column(Modifier.padding(viewPort)) {
                 Text(text = "Who would you like to see?", style = MaterialTheme.typography.h5, fontWeight = FontWeight.W700, color = Color.Black)
 

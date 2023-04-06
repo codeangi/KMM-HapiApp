@@ -3,6 +3,7 @@ package com.deepak.myapplication.android.feature.appointments
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,7 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,15 +35,32 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppointmentsScreen(
-    onAddAppointmentClicked: () -> Unit
+    onAddAppointmentClicked: () -> Unit,
+    onAppointmentCardClicked: (AppointmentScheduleData) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val viewModel: AppointmentViewModel = koinViewModel()
+    val isLoading by viewModel.isApiLoading.collectAsState()
+
     LaunchedEffect(key1 = lifecycle, block = {
         viewModel.getPatientAppointmentSchedules()
     })
     Scaffold(modifier = Modifier.fillMaxSize()) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                    Modifier.size(48.dp)
+                        .align(Center),
+                    color = Color.Black
+                )
+                }
+            }
+
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .padding(viewPort)) {
@@ -68,7 +89,7 @@ fun AppointmentsScreen(
                     }
 
                     items(viewModel.todaysAppointments.value) {
-                        AppointmentCard(it)
+                        AppointmentCard(it, onAppointmentCardClicked)
                     }
 
                     if (viewModel.upcomingAppointments.value.isEmpty().not()) {
@@ -83,7 +104,7 @@ fun AppointmentsScreen(
                         }
                     }
                     items(viewModel.upcomingAppointments.value) {
-                        AppointmentCard(it)
+                        AppointmentCard(it, onAppointmentCardClicked)
                     }
 
                     if (viewModel.pastAppointments.value.isEmpty().not()) {
@@ -98,7 +119,7 @@ fun AppointmentsScreen(
                         }
                     }
                     items(viewModel.pastAppointments.value) {
-                        AppointmentCard(it)
+                        AppointmentCard(it, onAppointmentCardClicked)
                     }
                 }
             }
@@ -107,11 +128,12 @@ fun AppointmentsScreen(
 }
 
 @Composable
-fun AppointmentCard(appointmentScheduleData: AppointmentScheduleData) {
+fun AppointmentCard(appointmentScheduleData: AppointmentScheduleData, onAppointmentCardClicked: (AppointmentScheduleData) -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onAppointmentCardClicked.invoke(appointmentScheduleData) }
             .height(320.dp)
             .padding(end = 16.dp)
             .border(

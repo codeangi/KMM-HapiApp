@@ -24,6 +24,8 @@ import androidx.navigation.compose.rememberNavController
 import com.deepak.myapplication.android.feature.appointments.*
 import com.deepak.myapplication.android.feature.home.HomeScreen
 import com.deepak.myapplication.android.theme.customCyan
+import com.deepak.myapplication.model.CareTeamData
+import com.deepak.myapplication.model.SelectedAppointmentData
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -104,6 +106,17 @@ fun BottomBarNavigationGraph(
         composable(DashboardBottomNavScreen.Appointments.route) { AppointmentsScreen(
             onAddAppointmentClicked = {
                 navController.navigate(Routes.APPOINTMENT_CARE_TEAM_SCREEN)
+            },
+            onAppointmentCardClicked = {
+                mainActivityViewModel.selectedCareTeamDoctor = CareTeamData(doctorName = it.doctorName)
+                mainActivityViewModel.selectedAppointmentData = SelectedAppointmentData(
+                    it.doctorName,
+                    it.symptoms,
+                    "Office Visit",
+                    it.location,
+                    it.appointmentDate
+                )
+                navController.navigate(Routes.APPOINTMENT_DETAILS_SCREEN)
             }
         ) }
         composable(DashboardBottomNavScreen.Medications.route) { MedicationsScreen() }
@@ -155,6 +168,18 @@ fun BottomBarNavigationGraph(
                     mainActivityViewModel.showBottomNavBar.value = true
                 }
             )
+        }
+
+        composable(Routes.APPOINTMENT_DETAILS_SCREEN) {
+            val appointmentViewModel: AppointmentViewModel = koinViewModel()
+            AppointmentReviewScreen(
+                mainActivityViewModel = mainActivityViewModel,
+                appointmentViewModel = appointmentViewModel,
+                isScheduleButtonRequired = false,
+                onScheduleAppointmentClick = {}
+            ) {
+                navController.popBackStack()
+            }
         }
     }
 }
