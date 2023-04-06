@@ -5,7 +5,7 @@ data class Resource(
     val resourceType: String,
     val id: String,
     val comment:String?,
-    val serviceType: List<Coding>?,
+    val serviceType: List<CodingList>?,
     val schedule: Schedule?,
     val contained: List<Resource>?,
     val qualification: List<Qualification>?,
@@ -68,6 +68,9 @@ data class Role(val text: String?, val coding: List<Coding>?)
 
 @kotlinx.serialization.Serializable
 data class Coding(val system: String?, val code: String?, val display: String?)
+
+@kotlinx.serialization.Serializable
+data class CodingList(val coding: List<Coding>)
 
 @kotlinx.serialization.Serializable
 data class ReasonCode(val coding: List<Coding>?)

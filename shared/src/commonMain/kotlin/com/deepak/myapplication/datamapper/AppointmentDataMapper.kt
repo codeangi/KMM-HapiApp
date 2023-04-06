@@ -41,10 +41,10 @@ class AppointmentDataMapper {
                             if (localTimeDate.date == Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date) {
                                 dataList.add(
                                     AppointmentScheduleData(
-                                        entry.resource.serviceType?.firstOrNull()?.display,
+                                        entry.resource.serviceType?.firstOrNull()?.coding?.firstOrNull()?.display,
                                         appointmentDate,
-                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_PRACTITIONER) == true}?.actor?.display,
-                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_LOCATION) == true}?.actor?.display,
+                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_PRACTITIONER) == true}?.actor?.display.toCamelCase(),
+                                        entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_LOCATION) == true}?.actor?.display.toCamelCase(),
                                     )
                                 )
                             }
@@ -54,7 +54,7 @@ class AppointmentDataMapper {
                             ) {
                                 dataList.add(
                                     AppointmentScheduleData(
-                                        entry.resource.reasonCode?.firstOrNull()?.coding?.firstOrNull()?.display,
+                                        entry.resource.serviceType?.firstOrNull()?.coding?.firstOrNull()?.display,
                                         appointmentDate,
                                         entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_PRACTITIONER) == true}?.actor?.display.toCamelCase(),
                                         entry.resource.participant?.firstOrNull { it.actor?.reference?.contains(RESOURCE_LOCATION) == true}?.actor?.display.toCamelCase(),
