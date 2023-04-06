@@ -70,7 +70,7 @@ fun DateTimeSlotRowUi(timeSlotData: TimeSlotData, onClickOfTimeSlot: (TimeSlotDa
     Column {
         Spacer(modifier = Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-           Column {
+           Column(Modifier.width(40.dp)) {
                Text(text = timeSlotData.dayAndTimeMap?.first?.weekDay ?: "",  style = MaterialTheme.typography.body1, fontWeight = FontWeight.W600, color = Color.Black)
                Spacer(modifier = Modifier.height(4.dp))
                Text(text = timeSlotData.dayAndTimeMap?.first?.date ?: "",  style = MaterialTheme.typography.h6, color = Color.Black)

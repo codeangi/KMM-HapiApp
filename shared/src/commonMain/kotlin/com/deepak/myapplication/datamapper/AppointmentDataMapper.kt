@@ -158,7 +158,8 @@ class AppointmentDataMapper {
                 }
             }
             var prevMonth = ""
-            dateMap.forEach {
+            val sortedMap = dateMap.toList().sortedWith(compareBy({ it.first.month }, { it.first.date?.toInt() })).toMap()
+            sortedMap.forEach {
                 dataList.add(
                     TimeSlotData(
                         month = it.key.month,
