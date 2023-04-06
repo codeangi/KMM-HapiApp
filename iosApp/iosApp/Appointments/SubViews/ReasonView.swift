@@ -31,6 +31,7 @@ struct ReasonView: View {
                                         .foregroundColor(Color.black.opacity(0.6))
                                 }
                                 .onTapGesture {
+                                    viewModel.setTypes()
                                     viewModel.selectedAppointmentData.reason = reason
                                     viewModel.appendScreen(screenType: .type)
                                 }

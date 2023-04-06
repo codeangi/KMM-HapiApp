@@ -58,6 +58,18 @@ class HomeUseCase constructor(
     suspend fun bookAppointment(resource: BookingResource): AppRequest {
         return userRepository.bookAppointment(resource)
     }
+
+    suspend fun getPatientNearByHospitals(
+        latitude: String,
+        longitude: String,
+        radius: Int
+    ): AppRequest {
+        return userRepository.getNearByHospital(
+            latitude = latitude,
+            longitude = longitude,
+            radius = radius
+        )
+    }
 }
 
 class KMPHomeUseCaseHelper : KoinComponent {

@@ -56,13 +56,14 @@ struct ReviewView: View {
                 }
             }
             .sheet(isPresented: $showBottomSheet, content: {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .center, spacing: 20) {
                     Image(systemName: "xmark")
                         .resizable()
                         .frame(width: 20, height: 20)
                         .padding()
                         .padding(.top, 20)
                         .onTapGesture {
+                            viewModel.note = ""
                             showBottomSheet = false
                         }
                     Text("Notes")
@@ -76,7 +77,19 @@ struct ReviewView: View {
                         .presentationDetents([.medium])
                         .scrollContentBackground(.hidden)
                         .cornerRadius(10)
-                    Spacer()
+                        .disabled(!isProgressNeeded)
+                    if isProgressNeeded {
+                        Button("SAVE") {
+                            showBottomSheet = false
+                        }
+                        .padding()
+                        .frame(width: viewModel.screenWidth - 60, height: 50)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.white)
+                        .background(Color.customCyan)
+                        .cornerRadius(15)
+                    }
                 }
                 .padding()
                 

@@ -31,7 +31,7 @@ struct TabBarView: View {
                     Image(systemName: "pill")
                     Text("Medication")
                 }
-            ProfileScreen()
+            ProfileScreen(viewModel: ProfileViewModel())
                 .tabItem {
                     Image(systemName: "person.circle")
                     Text("Profile")

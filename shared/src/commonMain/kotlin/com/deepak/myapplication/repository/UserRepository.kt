@@ -6,6 +6,7 @@ import com.deepak.myapplication.local.DataBase
 import com.deepak.myapplication.local.UserSettingsRepository
 import com.deepak.myapplication.model.AccessTokenData
 import com.deepak.myapplication.model.BookingResource
+import com.deepak.myapplication.model.LocationDataResp
 import com.deepak.myapplication.model.Resource
 import comdeepakmyapplicationlocal.User
 import io.ktor.client.*
@@ -23,13 +24,13 @@ interface UserRepository {
     suspend fun getToken(): AppRequest
 
     suspend fun bookAppointment(appointmentSlotReq: BookingResource): AppRequest
+
+    suspend fun getNearByHospital(latitude: String, longitude: String, radius: Int): AppRequest
 }
 
 class UserRepositoryImpl constructor(
-    private val httpClient: HttpClient,
-    private val userSettingsRepository: UserSettingsRepository
-) :
-    UserRepository, KoinComponent {
+    private val httpClient: HttpClient, private val userSettingsRepository: UserSettingsRepository
+) : UserRepository, KoinComponent {
 
     private val database: DataBase by inject()
 
@@ -70,6 +71,24 @@ class UserRepositoryImpl constructor(
                 contentType(ContentType.Application.Json)
             }
             val data = response.body<Resource>()
+            AppRequest.Result(data)
+        } catch (e: Exception) {
+            AppRequest.Error(e)
+        }
+    }
+
+    override suspend fun getNearByHospital(
+        latitude: String, longitude: String, radius: Int
+    ): AppRequest {
+        return try {
+            val response = httpClient.get {
+                url(RemoteRoutes.NEARBY_LOCATIONS)
+                parameter(RemoteRoutes.Parameters.NEAR, "$latitude|$longitude|${radius}|mi")
+                val token = userSettingsRepository.getAccessToken() ?: ""
+                bearerAuth(token)
+
+            }
+            val data = response.body<LocationDataResp>()
             AppRequest.Result(data)
         } catch (e: Exception) {
             AppRequest.Error(e)

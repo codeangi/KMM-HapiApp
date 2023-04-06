@@ -9,8 +9,18 @@
 import SwiftUI
 
 struct ProfileScreen: View {
+    
+    @ObservedObject var viewModel: ProfileViewModel
+    
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
+            if let patientDetails = viewModel.patientDetails {
+                let patientId = "Patient ID: \(patientDetails.id ?? "")"
+                let resourceType = "Resource Type: \(patientDetails.resourceType)"
+                Text(patientId)
+                Text(resourceType)
+            }
+            Text("User Id: \(viewModel.userId)")
             Button("LOGOUT") {
                 
             }

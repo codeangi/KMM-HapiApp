@@ -50,9 +50,9 @@ class AppointmentViewModel: ObservableObject {
     @Published var careTeam = [CareTeamData]()
     @Published var reasons = [String]()
     @Published var types = [TypeModel]()
-    @Published var dateTime = [MonthModel]()
+    @Published var dateTime = [SlotModel]()
     @Published var screenWidth = UIScreen.main.bounds.width
-    @Published var selectedCareTeamIndex: Int = 0
+    @Published var selectedPractitionerId = ""
     @Published var note: String = ""
     @Published var selectedAppointmentData: SelectedAppointmentData = SelectedAppointmentData(doctorName: "", reason: "", appointmentType: "", appointmentLocationAddress: "", timeSlotData: "")
     
@@ -62,10 +62,6 @@ class AppointmentViewModel: ObservableObject {
         setPastAppointments()
         setUpcomingAppointments()
         setCurrentAppointments()
-        setCareTeam()
-        setReasons()
-        setTypes()
-        setDateTime()
     }
     
     func setPastAppointments() {
@@ -87,7 +83,7 @@ class AppointmentViewModel: ObservableObject {
     }
     func setCurrentAppointments() {
         
-        appointmentUseCase.getPatientAppointmentSchedules { appRequest, error in
+        appointmentUseCase.getPatientTodaysAppointments { appRequest, error in
             guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<AppointmentScheduleData> else { return }
             guard let result = request.result as? [AppointmentScheduleData] else { return }
             
@@ -116,21 +112,35 @@ class AppointmentViewModel: ObservableObject {
     }
     
     func setDateTime() {
-        let t1: [String] = ["6:30 PM", "7:30 PM", "9:30 PM", "10:30 PM"]
-        let t2: [String] = ["6:30 PM", "9:30 PM", "10:30 PM"]
-        let t3: [String] = ["7:30 PM", "8:30 PM"]
-        
-        let d1 = DateModel(weekDay: "Tuesday", weekDate: "14", time: t2)
-        let d2 = DateModel(weekDay: "Thursday", weekDate: "16", time: t3)
-        let d3 = DateModel(weekDay: "Tuesday", weekDate: "21", time: t2)
-        let d4 = DateModel(weekDay: "Monday", weekDate: "03", time: t1)
-        let d5 = DateModel(weekDay: "Wednesday", weekDate: "05", time: t3)
-        let d6 = DateModel(weekDay: "Friday", weekDate: "07", time: t1)
-        
-        let m1 = MonthModel(month: "April", year: "2023", dayAndTimeMap: [d1,d2,d3])
-        let m2 = MonthModel(month: "May", year: "2023", dayAndTimeMap: [d4,d5,d6])
-        
-        dateTime = [m1, m2]
+        appointmentUseCase.getAppointmentSlots(practitionerId: selectedPractitionerId) { appRequest, error in
+            guard let appRequest = appRequest, let request = appRequest as? AppRequestListResult<TimeSlotData> else { return }
+            guard let result = request.result as? [TimeSlotData] else { return }
+            
+            var month: String = ""
+            var year: String = ""
+            var timeSlotDataArray: [TimeSlotData] = []
+            var finalArray: [SlotModel] = []
+            
+            for data in result {
+                if month == "" && year == "" {
+                    month = data.month ?? ""
+                    year = data.year ?? ""
+                    timeSlotDataArray.append(data)
+                } else if month == data.month && year == data.year {
+                    timeSlotDataArray.append(data)
+                } else {
+                    let slotModel = SlotModel(month: month, year: year, slotData: timeSlotDataArray)
+                    finalArray.append(slotModel)
+                    month = data.month ?? ""
+                    year = data.year ?? ""
+                    timeSlotDataArray = []
+                    timeSlotDataArray.append(data)
+                }
+            }
+            let slotModel = SlotModel(month: month, year: year, slotData: timeSlotDataArray)
+            finalArray.append(slotModel)
+            self.dateTime = finalArray
+        }
     }
     
     func appendScreen(screenType: AppointmentScreens) {
@@ -153,10 +163,7 @@ class AppointmentViewModel: ObservableObject {
         appendScreen(screenType: .review(isProgressNeeded: false))
     }
     
-    func clearSelectedData() {
-        selectedAppointmentData.reason = ""
-        selectedAppointmentData.doctorName = ""
-        selectedAppointmentData.appointmentLocationAddress = ""
-        selectedAppointmentData.timeSlotData = ""
+    func getCareTeamData() -> CareTeamData {
+        return careTeam.first(where: { $0.practitionerId == selectedPractitionerId }) ?? careTeam[0]
     }
 }

@@ -51,7 +51,7 @@ struct CareTeamListView: View {
                         
                         .padding(.vertical, 10)
                         .onTapGesture {
-                            viewModel.selectedCareTeamIndex = viewModel.careTeam.firstIndex(of: careTeam) ?? 0
+                            viewModel.selectedPractitionerId = careTeam.practitionerId ?? ""
                             viewModel.appendScreen(screenType: .careDetail(careData: careTeam))
                         }
                     }
