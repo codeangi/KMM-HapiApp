@@ -154,7 +154,7 @@ class AppointmentDataMapper {
                     val dayOfWeek = localTimeDate.dayOfWeek.name.subSequence(0,3).toString().uppercase()
                     val time = "${localTimeDate.time.hour % 12}:${localTimeDate.time.minute} ${if (localTimeDate.time.hour % 12 == 0) "AM" else "PM"}"
                     dateList.add(TimeWithResponseData(time, it.resource))
-                    dateMap[DateData(dayOfWeek, dateOfMonth, month, localTimeDate.year.toString())] = dateList
+                    dateMap[DateData(dayOfWeek, dateOfMonth, month, localTimeDate.year.toString())] = dateList.filter { it.response?.start?.substring(0, 10)?.contains(date.substring(0, 10)) == true }
                 }
             }
             var prevMonth = ""

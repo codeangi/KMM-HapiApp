@@ -82,7 +82,10 @@ class HomeViewModel constructor(
                                    display = "reason"
                                )
                            ),
-                           contained = listOf(it)
+                           it.participant,
+                           it.slot,
+                           it.start,
+                           it.end
                        )
                    )
                     Log.d("HomeViewModel","Booking appointment resp:$resp")
