@@ -7,4 +7,5 @@ data class SelectedAppointmentData(
     var appointmentType: String? = null,
     var appointmentLocationAddress: String? = null,
     var timeSlotData: String? = null,
+    var addedNotes: String? = null
 )

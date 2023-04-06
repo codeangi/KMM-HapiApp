@@ -13,8 +13,6 @@ class MainActivityViewModel : ViewModel() {
 
     var selectedAppointmentData: SelectedAppointmentData = SelectedAppointmentData()
 
-    var showBottomNavBar = mutableStateOf(true)
-
     var responseDataForBooking: Resource? = null
 
     var addedNotesState = mutableStateOf(ADD_NOTES_DEFAULT_TEXT)

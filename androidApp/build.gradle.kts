@@ -52,6 +52,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation ("com.airbnb.android:lottie-compose:4.0.0")
     implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+
 
     //Koin
     implementation("io.insert-koin:koin-android:$koinVersion")
