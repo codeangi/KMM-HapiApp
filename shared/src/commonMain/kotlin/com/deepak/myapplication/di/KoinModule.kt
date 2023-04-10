@@ -56,6 +56,9 @@ val commonModule = module {
     factory<PractitionerRepository> { PractitionerRepositoryImpl(get(), get()) }
     factory { PractitionerUseCase(get()) }
 
+    // Profile
+    factory { ProfileUseCase(get(), get()) }
+
 }
 
 internal fun provideDataBase(databaseDriverFactory: DatabaseDriverFactory): DataBase {

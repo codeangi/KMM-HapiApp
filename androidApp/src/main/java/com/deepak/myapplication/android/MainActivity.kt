@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.deepak.myapplication.AppConstant.ADD_NOTES_DEFAULT_TEXT
 import com.deepak.myapplication.android.feature.appointments.*
 import com.deepak.myapplication.android.feature.home.HomeScreen
+import com.deepak.myapplication.android.feature.profile.ProfileScreen
 import com.deepak.myapplication.android.theme.customCyan
 import com.deepak.myapplication.model.CareTeamData
 import com.deepak.myapplication.model.SelectedAppointmentData
@@ -126,7 +127,6 @@ fun BottomBarNavigationGraph(
         ) }
         composable(DashboardBottomNavScreen.Medications.route) { MedicationsScreen() }
         composable(DashboardBottomNavScreen.Profile.route) { ProfileScreen() }
-        composable(DashboardBottomNavScreen.Profile.route) { ProfileScreen() }
         composable(Routes.APPOINTMENT_CARE_TEAM_SCREEN) {
             AppointmentCareTeamScreen (
                 onBack = { navController.popBackStack() },
@@ -223,8 +223,5 @@ fun MedicationsScreen() {
     Text("Medications Screen")
 }
 
-@Composable
-fun ProfileScreen() {
-    Text("Profile Screen")
-}
+
 
